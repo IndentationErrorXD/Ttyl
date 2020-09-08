@@ -1,6 +1,12 @@
 from tkinter import *
+import file_handling as fh
+import help_functions as hp
+import os
 
-activity_data = [] #stores the color values of all timeslots/Button UPON SAVING
+#activity_data = [] #stores the color values of all timeslots/Button UPON SAVING
+
+if os.path.exists('data.csv') == False:
+	fh.initialize()
 
 root = Tk()
 root.title("Time Matrix")
@@ -72,7 +78,8 @@ clear_all.grid(row=5, column=19, columnspan=3)
 #Save button
 
 #func
-def _save_(): #Saves all the color values in the list activity_data 
+def _save_(): #Saves all the color values in the list activity_data
+	activity_data = [] 
 	no_of_hrs = len(button_list)
 	for hr in range(no_of_hrs):
 		activity_data.append([])
@@ -82,6 +89,12 @@ def _save_(): #Saves all the color values in the list activity_data
 			bg = button.cget('bg')
 			activity_data[hr].append(bg)
 	#print(activity_data)
+	flatlist=['date']
+	hp.reemovNestings(lst=activity_data, flatlist=flatlist)
+	if fh.csv_isEmpty():
+		fh.csv_append(flatlist)
+	else:
+		fh.replace_row('date', flatlist)	
 			
 #code
 save = Button(grid_frame, text='Save', width=7, command=_save_)
