@@ -64,7 +64,7 @@ def clear_all():
 		for button in hrlist:
 			button.config(bg='white') 
 #code
-clear_all = Button(grid_frame, text='Clear all', command=clear_all)
+clear_all = Button(grid_frame, text='Clear all', width=7, command=clear_all)
 clear_all.grid(row=5, column=19, columnspan=3)
 
 #Save button
