@@ -1,5 +1,12 @@
 from tkinter import *
+from tkinter import messagebox
 
+
+"""Initialisation"""
+#Name=input("")  maybe we will use tkinter gui for this
+"""linking with SQL databases """
+
+"""Matrix"""
 root = Tk()
 root.title("Time Matrix")
 
@@ -60,9 +67,11 @@ for i in range(4):
 
 #func
 def clear_all():
-	for hrlist in button_list:
-		for button in hrlist:
-			button.config(bg='white')
+        op=messagebox.askquestion('Clear all', "Do you really want to clear today's data")  #to confirm the user's choice
+        if op == 'yes' :
+                for hrlist in button_list:
+                        for button in hrlist:
+                                button.config(bg='white')
  
 #code
 clear_all = Button(grid_frame, text='Clear all', command=clear_all)
