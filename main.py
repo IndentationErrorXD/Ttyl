@@ -1,5 +1,7 @@
 from tkinter import *
 
+activity_data = [] #stores the color values of all timeslots/Button UPON SAVING
+
 root = Tk()
 root.title("Time Matrix")
 
@@ -70,8 +72,17 @@ clear_all.grid(row=5, column=19, columnspan=3)
 #Save button
 
 #func
-def _save_():
-	return
+def _save_(): #Saves all the color values in the list activity_data 
+	no_of_hrs = len(button_list)
+	for hr in range(no_of_hrs):
+		activity_data.append([])
+		no_of_minslots = len(button_list[hr])
+		for mins in range(no_of_minslots):
+			button = button_list[hr][mins]
+			bg = button.cget('bg')
+			activity_data[hr].append(bg)
+	#print(activity_data)
+			
 #code
 save = Button(grid_frame, text='Save', width=7, command=_save_)
 save.grid(row=5, column=22, columnspan=3)
