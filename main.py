@@ -1,6 +1,13 @@
 from tkinter import *
 from tkinter import messagebox
+import file_handling as fh
+import help_functions as hp
+import os
 
+#activity_data = [] #stores the color values of all timeslots/Button UPON SAVING
+
+if os.path.exists('data.csv') == False:
+	fh.initialize()
 
 """Initialisation"""
 #Name=input("")  maybe we will use tkinter gui for this
@@ -72,9 +79,34 @@ def clear_all():
                 for hrlist in button_list:
                         for button in hrlist:
                                 button.config(bg='white')
- 
 #code
-clear_all = Button(grid_frame, text='Clear all', command=clear_all)
-clear_all.grid(row=5, column=22, columnspan=3)
+clear_all = Button(grid_frame, text='Clear all', width=7, command=clear_all)
+clear_all.grid(row=5, column=19, columnspan=3)
+
+#Save button
+
+#func
+def _save_(): #Saves all the color values in the list activity_data
+	activity_data = [] 
+	no_of_hrs = len(button_list)
+	for hr in range(no_of_hrs):
+		activity_data.append([])
+		no_of_minslots = len(button_list[hr])
+		for mins in range(no_of_minslots):
+			button = button_list[hr][mins]
+			bg = button.cget('bg')
+			activity_data[hr].append(bg)
+	#print(activity_data)
+	flatlist=['date']
+	hp.reemovNestings(lst=activity_data, flatlist=flatlist)
+	if fh.csv_isEmpty():
+		fh.csv_append(flatlist)
+	else:
+		fh.replace_row('date', flatlist)
+    
+#code
+save = Button(grid_frame, text='Save', width=7, command=_save_)
+save.grid(row=5, column=22, columnspan=3)
+
 
 root.mainloop()
