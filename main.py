@@ -62,10 +62,19 @@ for i in range(4):
 def clear_all():
 	for hrlist in button_list:
 		for button in hrlist:
-			button.config(bg='white')
- 
+			button.config(bg='white') 
 #code
 clear_all = Button(grid_frame, text='Clear all', command=clear_all)
 clear_all.grid(row=5, column=19, columnspan=3)
+
+#Save button
+
+#func
+def _save_():
+	return
+#code
+save = Button(grid_frame, text='Save', width=7, command=_save_)
+save.grid(row=5, column=22, columnspan=3)
+
 
 root.mainloop()
