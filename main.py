@@ -66,6 +66,6 @@ def clear_all():
  
 #code
 clear_all = Button(grid_frame, text='Clear all', command=clear_all)
-clear_all.grid(row=5, column=22, columnspan=3)
+clear_all.grid(row=5, column=19, columnspan=3)
 
 root.mainloop()
