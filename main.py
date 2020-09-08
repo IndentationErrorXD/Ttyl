@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter import messagebox
 import file_handling as fh
 import help_functions as hp
 import os
@@ -9,11 +8,6 @@ import os
 if os.path.exists('data.csv') == False:
 	fh.initialize()
 
-"""Initialisation"""
-#Name=input("")  maybe we will use tkinter gui for this
-"""linking with SQL databases """
-
-"""Matrix"""
 root = Tk()
 root.title("Time Matrix")
 
@@ -74,11 +68,9 @@ for i in range(4):
 
 #func
 def clear_all():
-        op=messagebox.askquestion('Clear all', "Do you really want to clear today's data")  #to confirm the user's choice
-        if op == 'yes' :
-                for hrlist in button_list:
-                        for button in hrlist:
-                                button.config(bg='white')
+	for hrlist in button_list:
+		for button in hrlist:
+			button.config(bg='white') 
 #code
 clear_all = Button(grid_frame, text='Clear all', width=7, command=clear_all)
 clear_all.grid(row=5, column=19, columnspan=3)
@@ -102,8 +94,8 @@ def _save_(): #Saves all the color values in the list activity_data
 	if fh.csv_isEmpty():
 		fh.csv_append(flatlist)
 	else:
-		fh.replace_row('date', flatlist)
-    
+		fh.replace_row('date', flatlist)	
+			
 #code
 save = Button(grid_frame, text='Save', width=7, command=_save_)
 save.grid(row=5, column=22, columnspan=3)
