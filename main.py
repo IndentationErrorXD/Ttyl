@@ -79,6 +79,7 @@ clear_all.grid(row=5, column=19, columnspan=3)
 
 #func
 def _save_(): #Saves all the color values in the list activity_data
+	date = 'date'
 	activity_data = [] 
 	no_of_hrs = len(button_list)
 	for hr in range(no_of_hrs):
@@ -89,12 +90,12 @@ def _save_(): #Saves all the color values in the list activity_data
 			bg = button.cget('bg')
 			activity_data[hr].append(bg)
 	#print(activity_data)
-	flatlist=['date']
+	flatlist=[date]
 	hp.reemovNestings(lst=activity_data, flatlist=flatlist)
-	if fh.csv_isEmpty():
+	if fh.csv_isEmpty(date):
 		fh.csv_append(flatlist)
 	else:
-		fh.replace_row('date', flatlist)	
+		fh.replace_row(date, flatlist)	
 			
 #code
 save = Button(grid_frame, text='Save', width=7, command=_save_)

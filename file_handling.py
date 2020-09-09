@@ -31,14 +31,15 @@ def getrows(csvreader):
 		rows.append(x)
 	return rows	
 
-def csv_isEmpty():
+def csv_isEmpty(date):
 	with open(filename, 'r') as csvfile:
 		csvreader = csv.reader(csvfile)
 		rows = getrows(csvreader)
-		if len(rows)==1:
-			return True
-		else:
-			return False
+		isEmpty = True
+		for row in rows:
+			if row[0]==date:
+				isEmpty = False
+		return isEmpty		
 
 def replace_row(date, row_list):
 	with open('data.csv') as inf, open('data_temp.csv', 'w', newline='\n') as outf:
