@@ -1,4 +1,5 @@
 from tkinter import *
+from datetime import date
 import file_handling as fh
 import help_functions as hp
 import os
@@ -79,7 +80,6 @@ clear_all.grid(row=5, column=19, columnspan=3)
 
 #func
 def _save_(): #Saves all the color values in the list activity_data
-	date = 'date'
 	activity_data = [] 
 	no_of_hrs = len(button_list)
 	for hr in range(no_of_hrs):
@@ -90,12 +90,12 @@ def _save_(): #Saves all the color values in the list activity_data
 			bg = button.cget('bg')
 			activity_data[hr].append(bg)
 	#print(activity_data)
-	flatlist=[date]
-	hp.reemovNestings(lst=activity_data, flatlist=flatlist)
-	if fh.csv_isEmpty(date):
+	flatlist=[date.today()]
+	hp.reemovNestings(activity_data, flatlist)
+	if fh.csv_isEmpty(date.today()):
 		fh.csv_append(flatlist)
 	else:
-		fh.replace_row(date, flatlist)	
+		fh.replace_row(date.today(), flatlist)	
 			
 #code
 save = Button(grid_frame, text='Save', width=7, command=_save_)
