@@ -30,11 +30,23 @@ def button_click(hr_index, min_index):
 
 h=10 #height
 w=10 #width
-button_list = []                   #List of button objects
-for hr in range(0, 23+1):          #iterating throught the 24hrs of the day
-	button_list.append([])
-	for mins in range(0, 3+1):     #iterating thru 4 15min slots of 1 hr 
-		button_list[hr].append(Button(grid_frame, image=blank_image, height=h, width=w, bg='white', borderwidth=4, command=lambda h=hr, m=mins: button_click(h, m)))
+button_list = [] #List of button objects
+def loadgrid(date):
+        h=10 #height
+        w=10 #width
+        L=[]
+        for x in fh.getrows():
+                if x[0]==str(date):
+                        for l in range(1,len(x),4):
+                                L.append(x[l:l+4])
+
+        for hr in range(0, 23+1):  #iterating throught the 24hrs of the day
+                button_list.append([])
+                for mins in range(0, 3+1):#iterating thru 4 15min slots of 1 hr
+                        button_list[hr].append(Button(grid_frame, image=blank_image, height=h, width=w, bg=L[hr][mins] if fh.csv_isExist(date.today()) else 'white' , borderwidth=4, command=lambda h=hr, m=mins: button_click(h, m)))
+        
+loadgrid(date.today())
+
 
 #Inserting the grid buttons
 
@@ -93,7 +105,7 @@ def _save_(): #Saves all the color values in the list activity_data
         flatlist=[date.today()]
         hp.reemovNestings(activity_data, flatlist)
         if len(fh.getrows())==1 or fh.csv_isExist(date.today()):
-                print(fh.csv_isExist(date.today()))
+                print(fh.getrows())
                 fh.csv_append(flatlist)
         else:
                 fh.replace_row(date.today(), flatlist)	

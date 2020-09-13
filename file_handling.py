@@ -47,10 +47,8 @@ def replace_row(date, row_list):
 		reader = csv.reader(inf)
 		writer = csv.writer(outf)
 		for line in reader:
-			if line[0] == date:
+			if line[0] == str(date):
 				writer.writerow(row_list)
-			else:
-				writer.writerow(line)
 
 	os.remove('data.csv')
 	os.rename('data_temp.csv', 'data.csv')	
