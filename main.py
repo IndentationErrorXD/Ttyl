@@ -80,22 +80,23 @@ clear_all.grid(row=5, column=19, columnspan=3)
 
 #func
 def _save_(): #Saves all the color values in the list activity_data
-	activity_data = [] 
-	no_of_hrs = len(button_list)
-	for hr in range(no_of_hrs):
-		activity_data.append([])
-		no_of_minslots = len(button_list[hr])
-		for mins in range(no_of_minslots):
-			button = button_list[hr][mins]
-			bg = button.cget('bg')
-			activity_data[hr].append(bg)
-	#print(activity_data)
-	flatlist=[date.today()]
-	hp.reemovNestings(activity_data, flatlist)
-	if fh.csv_isEmpty(date.today()):
-		fh.csv_append(flatlist)
-	else:
-		fh.replace_row(date.today(), flatlist)	
+        activity_data = [] 
+        no_of_hrs = len(button_list)
+        for hr in range(no_of_hrs):
+                activity_data.append([])
+                no_of_minslots = len(button_list[hr])
+                for mins in range(no_of_minslots):
+                        button = button_list[hr][mins]
+                        bg = button.cget('bg')
+                        activity_data[hr].append(bg)
+        #print(activity_data)
+        flatlist=[date.today()]
+        hp.reemovNestings(activity_data, flatlist)
+        if len(fh.getrows())==1 or fh.csv_isExist(date.today()):
+                print(fh.csv_isExist(date.today()))
+                fh.csv_append(flatlist)
+        else:
+                fh.replace_row(date.today(), flatlist)	
 			
 #code
 save = Button(grid_frame, text='Save', width=7, command=_save_)
