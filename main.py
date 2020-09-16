@@ -6,6 +6,7 @@ import os
 
 #activity_data = [] #stores the color values of all timeslots/Button UPON SAVING
 
+#print(date.fromisoformat(str(date.today())).weekday())
 if os.path.exists('data.csv') == False:
 	fh.initialize()
 
@@ -106,10 +107,11 @@ def _save_(): #Saves all the color values in the list activity_data
         #print(activity_data)
         flatlist=[date.today()]
         hp.reemovNestings(activity_data, flatlist)
-        if len(fh.getrows())==1 or fh.csv_isExist(date.today()):
-                fh.csv_append(flatlist)
-        else:
+        #print(fh.csv_isExist(str(date.today())))
+        if fh.csv_isExist(str(date.today())):
                 fh.replace_row(date.today(), flatlist)	
+        else:
+                fh.csv_append(flatlist)
 			
 #code
 save = Button(grid_frame, text='Save', width=7, command=_save_)

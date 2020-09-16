@@ -39,18 +39,22 @@ def csv_isExist(date):
 		isExist = False
 		for row in rows:
 			if row[0]==date:
-				isExist =True 
+				isExist =True
+				break
 		return isExist		
 
 def replace_row(date, row_list):
-	with open('data.csv') as inf, open('data_temp.csv', 'w', newline='\n') as outf:
-		reader = csv.reader(inf)
-		writer = csv.writer(outf)
-		for line in reader:
-			if line[0] == str(date):
-				writer.writerow(row_list)
+        with open('data.csv') as inf, open('data_temp.csv', 'w', newline='\n') as outf:
+                reader = csv.reader(inf)
+                writer = csv.writer(outf)
+                for line in reader:
+                        #print(line)
+                        if line[0] == str(date):
+                                writer.writerow(row_list)
+                        else:
+                                writer.writerow(line)
 
-	os.remove('data.csv')
-	os.rename('data_temp.csv', 'data.csv')	
-	print('1 row replaced')	
+        os.remove('data.csv')
+        os.rename('data_temp.csv', 'data.csv')	
+        print('1 row replaced')	
 
