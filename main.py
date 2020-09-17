@@ -17,7 +17,7 @@ grid_frame = LabelFrame(root, padx=10, pady=10)
 grid_frame.pack()
 
 blank_image = PhotoImage()
-colors = ['white', 'red', 'green', 'white']
+colors = ['white', 'red', 'blue', 'green', 'white']
 
 #Defining the Button function(s)
 
