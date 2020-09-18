@@ -1,10 +1,12 @@
 from tkinter import *
+from datetime import date
 import file_handling as fh
 import help_functions as hp
 import os
 
 #activity_data = [] #stores the color values of all timeslots/Button UPON SAVING
 
+#print(date.fromisoformat(str(date.today())).weekday())
 if os.path.exists('data.csv') == False:
 	fh.initialize()
 
@@ -15,7 +17,7 @@ grid_frame = LabelFrame(root, padx=10, pady=10)
 grid_frame.pack()
 
 blank_image = PhotoImage()
-colors = ['white', 'red', 'green', 'white']
+colors = ['white', 'red', 'blue', 'green', 'white']
 
 #Defining the Button function(s)
 
@@ -29,11 +31,25 @@ def button_click(hr_index, min_index):
 
 h=10 #height
 w=10 #width
-button_list = []                   #List of button objects
-for hr in range(0, 23+1):          #iterating throught the 24hrs of the day
-	button_list.append([])
-	for mins in range(0, 3+1):     #iterating thru 4 15min slots of 1 hr 
-		button_list[hr].append(Button(grid_frame, image=blank_image, height=h, width=w, bg='white', borderwidth=4, command=lambda h=hr, m=mins: button_click(h, m)))
+button_list = [] #List of button objects
+def loadgrid(date):
+        h=10 #height
+        w=10 #width
+        L=[]
+        p=False
+        for x in fh.getrows():
+                if x[0]==str(date):
+                        p=True
+                        for l in range(1,len(x),4):
+                                L.append(x[l:l+4])
+
+        for hr in range(0, 23+1):  #iterating throught the 24hrs of the day
+                button_list.append([])
+                for mins in range(0, 3+1):#iterating thru 4 15min slots of 1 hr
+                        button_list[hr].append(Button(grid_frame, image=blank_image, height=h, width=w, bg=L[hr][mins] if p else 'white', borderwidth=4, command=lambda h=hr, m=mins: button_click(h, m)))
+        
+loadgrid(date.today())
+
 
 #Inserting the grid buttons
 
@@ -79,23 +95,23 @@ clear_all.grid(row=5, column=19, columnspan=3)
 
 #func
 def _save_(): #Saves all the color values in the list activity_data
-	date = 'date'
-	activity_data = [] 
-	no_of_hrs = len(button_list)
-	for hr in range(no_of_hrs):
-		activity_data.append([])
-		no_of_minslots = len(button_list[hr])
-		for mins in range(no_of_minslots):
-			button = button_list[hr][mins]
-			bg = button.cget('bg')
-			activity_data[hr].append(bg)
-	#print(activity_data)
-	flatlist=[date]
-	hp.reemovNestings(lst=activity_data, flatlist=flatlist)
-	if fh.csv_isEmpty(date):
-		fh.csv_append(flatlist)
-	else:
-		fh.replace_row(date, flatlist)	
+        activity_data = [] 
+        no_of_hrs = len(button_list)
+        for hr in range(no_of_hrs):
+                activity_data.append([])
+                no_of_minslots = len(button_list[hr])
+                for mins in range(no_of_minslots):
+                        button = button_list[hr][mins]
+                        bg = button.cget('bg')
+                        activity_data[hr].append(bg)
+        #print(activity_data)
+        flatlist=[date.today()]
+        hp.reemovNestings(activity_data, flatlist)
+        #print(fh.csv_isExist(str(date.today())))
+        if fh.csv_isExist(str(date.today())):
+                fh.replace_row(date.today(), flatlist)	
+        else:
+                fh.csv_append(flatlist)
 			
 #code
 save = Button(grid_frame, text='Save', width=7, command=_save_)
