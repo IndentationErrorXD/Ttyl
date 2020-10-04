@@ -24,8 +24,9 @@ colors = ['white', 'red', 'blue', 'green', 'white']
 
 #Defining the Button function(s)
 
-def button_click(hr_index, min_index):
+def button_click(hr_index, min_index, fill_mode, fill_color):
     button = button_list[hr_index][min_index]
+    print(fill_mode, fill_color)
     if fill_mode:
         button_list[hr_index][min_index].config(bg=fill_color)
     else:        
@@ -52,7 +53,7 @@ def loadgrid(date):
         for hr in range(0, 23+1):  #iterating throught the 24hrs of the day
                 button_list.append([])
                 for mins in range(0, 3+1):#iterating thru 4 15min slots of 1 hr
-                        button_list[hr].append(Button(grid_frame, image=blank_image, height=h, width=w, bg=L[hr][mins] if p else 'white', borderwidth=4, command=lambda h=hr, m=mins: button_click(h, m)))
+                        button_list[hr].append(Button(grid_frame, image=blank_image, height=h, width=w, bg=L[hr][mins] if p else 'white', borderwidth=4, command=lambda h=hr, m=mins, mode=fill_mode, color=fill_color: button_click(h, m, mode, color)))
         
 loadgrid(date.today())
 
@@ -86,7 +87,7 @@ for i in range(4):
 	label = Label(label_frame, text ="{}-{}".format(i*15, (i+1)*15))
 	label.pack()
 
-#File-Mode:
+#Fill-Mode:
 
 #label
 filemode_frame = LabelFrame(grid_frame, width=60, height=27)
@@ -98,16 +99,50 @@ _filemode.pack()
 #toggle-button
 def fmt(): #Fill mode toggle button function
     b = FM_toggle_button
+    bc = FC_toggle_button
     text = b.cget('text')
+    #print(f'Text="{text}"')
     if text=='Off':
-        b.configure(bg=fill_color)
-        b.configure(text="On")
+        fill_mode=True
+        FC_toggle_button.configure(state='normal')
+        fill_color='red'
+        bc.config(bg='red')
+        bc.config(text='red')
+        b.config(text="On")
     elif text=="On":
-        b.configure(bg='grey')
-        b.configure(text="Off")    
+        fill_mode=False
+        bc.config(bg='light grey')
+        bc.config(state='disabled')
+        b.config(text="Off")
+    else:
+        print('DEVELOPER ERROR')       
 
-FM_toggle_button = Button(grid_frame, text='Off', bg='grey', command=fmt)
+FM_toggle_button = Button(grid_frame, text='Off', bg='light grey', command=fmt)
 FM_toggle_button.grid(row=5, column=4, columnspan=2, sticky=N+S+E+W)
+
+#Fill-Color
+
+#label
+filecolor_frame = LabelFrame(grid_frame, width=60, height=27)
+filecolor_frame.grid(row=6, column=1, columnspan=3)
+filecolor_frame.pack_propagate(0)
+_filecolor = Label(filecolor_frame, text='Fill Color:')
+_filecolor.pack()
+
+#button
+def fcf(): #Fill color function
+    b=FC_toggle_button
+    color = b.cget('bg')
+    bg = b.cget('bg')
+    index = colors.index(bg)
+    next_color=colors[index+1]
+    fill_color=next_color
+    b.config(bg=next_color)
+    b.config(text=next_color)    
+
+FC_toggle_button = Button(grid_frame, text=fill_color, bg='light grey', command=fcf, state=DISABLED)
+FC_toggle_button.grid(row=6, column=4, columnspan=2, sticky=N+S+E+W)
+
 
 #Clear all button
 
