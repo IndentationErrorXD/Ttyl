@@ -86,6 +86,11 @@ for i in range(4):
 	label = Label(label_frame, text ="{}-{}".format(i*15, (i+1)*15))
 	label.pack()
 
+#File-Mode:
+
+_filemode = Label(grid_frame, text='Fill Mode:')
+_filemode.grid(row=5, column=1, columnspan=3)
+
 #Clear all button
 
 #func
