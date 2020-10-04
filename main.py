@@ -25,11 +25,14 @@ colors = ['white', 'red', 'blue', 'green', 'white']
 #Defining the Button function(s)
 
 def button_click(hr_index, min_index):
-	button = button_list[hr_index][min_index]
-	bg = button.cget('bg')
-	index = colors.index(bg)
-	button_list[hr_index][min_index].config(bg=colors[index+1])
- 
+    button = button_list[hr_index][min_index]
+    if fill_mode:
+        button_list[hr_index][min_index].config(bg=fill_color)
+    else:        
+        bg = button.cget('bg')
+        index = colors.index(bg)
+        button_list[hr_index][min_index].config(bg=colors[index+1])
+
 #Defining the grid buttons:
 
 h=10 #height
