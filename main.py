@@ -88,8 +88,19 @@ for i in range(4):
 
 #File-Mode:
 
-_filemode = Label(grid_frame, text='Fill Mode:')
-_filemode.grid(row=5, column=1, columnspan=3)
+#label
+filemode_frame = LabelFrame(grid_frame, width=60, height=27)
+filemode_frame.grid(row=5, column=1, columnspan=3)
+filemode_frame.pack_propagate(0)
+_filemode = Label(filemode_frame, text='Fill Mode:')
+_filemode.pack()
+
+#toggle-button
+def fmt(): #Fill mode toggle button function
+    return
+
+FM_toggle_button = Button(grid_frame, text='Off', bg='grey', command=fmt)
+FM_toggle_button.grid(row=5, column=4, columnspan=2, sticky=N+S+E+W)
 
 #Clear all button
 
