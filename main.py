@@ -97,7 +97,14 @@ _filemode.pack()
 
 #toggle-button
 def fmt(): #Fill mode toggle button function
-    return
+    b = FM_toggle_button
+    text = b.cget('text')
+    if text=='Off':
+        b.configure(bg=fill_color)
+        b.configure(text="On")
+    elif text=="On":
+        b.configure(bg='grey')
+        b.configure(text="Off")    
 
 FM_toggle_button = Button(grid_frame, text='Off', bg='grey', command=fmt)
 FM_toggle_button.grid(row=5, column=4, columnspan=2, sticky=N+S+E+W)
