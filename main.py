@@ -4,6 +4,9 @@ import file_handling as fh
 import help_functions as hp
 import os
 
+fill_mode = False
+fill_color = 'red'
+
 #activity_data = [] #stores the color values of all timeslots/Button UPON SAVING
 
 #print(date.fromisoformat(str(date.today())).weekday())
