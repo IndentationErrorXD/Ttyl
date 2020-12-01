@@ -41,19 +41,22 @@ def button_click_fill_mode(hr_index, min_index, fill_color):
 h=10 #height
 w=10 #width
 button_list = [] #List of button objects
-def loadgrid(date):
+def loadgrid(date, data=[]):
         global fill_mode
         global fill_color
         #print('loadgrid called')
         h=10 #height
         w=10 #width
-        L=[]
+        L=data
         p=False
-        for x in fh.getrows():
-                if x[0]==str(date):
-                        p=True
-                        for l in range(1,len(x),4):
-                                L.append(x[l:l+4])
+        if L!=[]:
+            p=True
+        else:    
+            for x in fh.getrows():
+                    if x[0]==str(date):
+                            p=True
+                            for l in range(1,len(x),4):
+                                    L.append(x[l:l+4])                            
 
         for hr in range(0, 23+1):  #iterating throught the 24hrs of the day
                 button_list.append([])
@@ -88,7 +91,25 @@ def deletegrid():
         for mins in range(no_of_minslots):
             button_list[hr][mins].destroy()
 
+def refresh_grid():
+    global button_list
 
+    #caching grid in activity data
+    activity_data = [] 
+    no_of_hrs = len(button_list)
+    for hr in range(no_of_hrs):
+            activity_data.append([])
+            no_of_minslots = len(button_list[hr])
+            for mins in range(no_of_minslots):
+                    button = button_list[hr][mins]
+                    bg = button.cget('bg')
+                    activity_data[hr].append(bg)
+    #print(activity_data)   
+                     
+    deletegrid()
+    button_list=[]
+    loadgrid(date.today(), activity_data)
+    insertgrid(button_list)
 
 #Defining and inserting Grid Labels
 
@@ -135,10 +156,7 @@ def fmt(): #Fill mode toggle button function
         bc.config(text='red')
         b.config(text="On")
 
-        deletegrid()
-        button_list=[]
-        loadgrid(date.today())
-        insertgrid(button_list)
+        refresh_grid()
 
     elif text=="On":
         fill_mode=False
@@ -146,10 +164,7 @@ def fmt(): #Fill mode toggle button function
         bc.config(state='disabled')
         b.config(text="Off")
 
-        deletegrid()
-        button_list=[]
-        loadgrid(date.today())
-        insertgrid(button_list)
+        refresh_grid()
     else:
         print('DEVELOPER ERROR')       
 
@@ -178,10 +193,7 @@ def fcf(): #Fill color function
     b.config(bg=next_color)
     b.config(text=next_color) 
 
-    deletegrid()
-    button_list=[]
-    loadgrid(date.today())
-    insertgrid(button_list)   
+    refresh_grid()   
 
 FC_toggle_button = Button(grid_frame, text=fill_color, bg='light grey', command=fcf, state=DISABLED)
 FC_toggle_button.grid(row=6, column=4, columnspan=2, sticky=N+S+E+W)
