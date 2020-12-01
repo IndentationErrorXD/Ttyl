@@ -24,15 +24,17 @@ colors = ['white', 'red', 'blue', 'green', 'white']
 
 #Defining the Button function(s)
 
-def button_click(hr_index, min_index, fill_mode, fill_color):
+def button_click_default(hr_index, min_index):
     button = button_list[hr_index][min_index]
-    print(fill_mode, fill_color)
-    if fill_mode:
-        button_list[hr_index][min_index].config(bg=fill_color)
-    else:        
-        bg = button.cget('bg')
-        index = colors.index(bg)
-        button_list[hr_index][min_index].config(bg=colors[index+1])
+    print(fill_mode, fill_color)       
+    bg = button.cget('bg')
+    index = colors.index(bg)
+    button_list[hr_index][min_index].config(bg=colors[index+1])
+
+def button_click_fill_mode(hr_index, min_index, fill_color):
+    button = button_list[hr_index][min_index]
+    print(fill_mode, fill_color)       
+    button_list[hr_index][min_index].config(bg=fill_color)    
 
 #Defining the grid buttons:
 
@@ -40,6 +42,9 @@ h=10 #height
 w=10 #width
 button_list = [] #List of button objects
 def loadgrid(date):
+        global fill_mode
+        global fill_color
+        #print('loadgrid called')
         h=10 #height
         w=10 #width
         L=[]
@@ -53,19 +58,37 @@ def loadgrid(date):
         for hr in range(0, 23+1):  #iterating throught the 24hrs of the day
                 button_list.append([])
                 for mins in range(0, 3+1):#iterating thru 4 15min slots of 1 hr
-                        button_list[hr].append(Button(grid_frame, image=blank_image, height=h, width=w, bg=L[hr][mins] if p else 'white', borderwidth=4, command=lambda h=hr, m=mins, mode=fill_mode, color=fill_color: button_click(h, m, mode, color)))
+                    if fill_mode:
+                        #print('fill mode called')
+                        button_list[hr].append(Button(grid_frame, image=blank_image, height=h, width=w, bg=L[hr][mins] if p else 'white', borderwidth=4, command=lambda h=hr, m=mins, color=fill_color: button_click_fill_mode(h, m, color)))
+                    else:
+                        #print('def mode called')    
+                        button_list[hr].append(Button(grid_frame, image=blank_image, height=h, width=w, bg=L[hr][mins] if p else 'white', borderwidth=4, command=lambda h=hr, m=mins: button_click_default(h, m)))
         
 loadgrid(date.today())
 
 
 #Inserting the grid buttons
+def insertgrid(button_list):
+    no_of_hrs = len(button_list)
 
-no_of_hrs = len(button_list)
+    for hr in range(no_of_hrs):
+    	no_of_minslots = len(button_list[hr])
+    	for mins in range(no_of_minslots):
+    		button_list[hr][mins].grid(row=mins+1, column=hr+1)
 
-for hr in range(no_of_hrs):
-	no_of_minslots = len(button_list[hr])
-	for mins in range(no_of_minslots):
-		button_list[hr][mins].grid(row=mins+1, column=hr+1)
+insertgrid(button_list)
+
+#Deleting the grid buttons
+def deletegrid():
+    no_of_hrs = len(button_list)
+
+    for hr in range(no_of_hrs):
+        no_of_minslots = len(button_list[hr])
+        for mins in range(no_of_minslots):
+            button_list[hr][mins].destroy()
+
+
 
 #Defining and inserting Grid Labels
 
@@ -98,6 +121,8 @@ _filemode.pack()
 
 #toggle-button
 def fmt(): #Fill mode toggle button function
+    global button_list
+    global fill_mode
     b = FM_toggle_button
     bc = FC_toggle_button
     text = b.cget('text')
@@ -109,11 +134,22 @@ def fmt(): #Fill mode toggle button function
         bc.config(bg='red')
         bc.config(text='red')
         b.config(text="On")
+
+        deletegrid()
+        button_list=[]
+        loadgrid(date.today())
+        insertgrid(button_list)
+
     elif text=="On":
         fill_mode=False
         bc.config(bg='light grey')
         bc.config(state='disabled')
         b.config(text="Off")
+
+        deletegrid()
+        button_list=[]
+        loadgrid(date.today())
+        insertgrid(button_list)
     else:
         print('DEVELOPER ERROR')       
 
@@ -131,6 +167,8 @@ _filecolor.pack()
 
 #button
 def fcf(): #Fill color function
+    global button_list
+    global fill_color
     b=FC_toggle_button
     color = b.cget('bg')
     bg = b.cget('bg')
@@ -138,7 +176,12 @@ def fcf(): #Fill color function
     next_color=colors[index+1]
     fill_color=next_color
     b.config(bg=next_color)
-    b.config(text=next_color)    
+    b.config(text=next_color) 
+
+    deletegrid()
+    button_list=[]
+    loadgrid(date.today())
+    insertgrid(button_list)   
 
 FC_toggle_button = Button(grid_frame, text=fill_color, bg='light grey', command=fcf, state=DISABLED)
 FC_toggle_button.grid(row=6, column=4, columnspan=2, sticky=N+S+E+W)
