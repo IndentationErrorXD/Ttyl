@@ -21,7 +21,7 @@ root.title("Time Matrix")
 blank_image = PhotoImage()
 
 grid_frame = LabelFrame(root, padx=10, pady=10)
-grid_frame.pack()
+grid_frame.grid(row=0, column=0, columnspan=25, rowspan=6)
 
 #Defining the Button function(s)
 
@@ -232,12 +232,16 @@ def _save_(): #Saves all the color values in the list activity_data
             fh.replace_row(date.today(), flatlist)  
     else:
             fh.csv_append(flatlist)		
-                
+
 #code
 save = Button(grid_frame, text='Save', width=7, command=_save_)
 save.grid(row=5, column=22, columnspan=3)
 
-
-
+'''
+Date-Picker
+'''
+picker_frame = LabelFrame(root)
+picker_frame.grid(row=7, column=0, columnspan=25)
+Label(picker_frame, text='test').pack()
 
 root.mainloop()
