@@ -6,6 +6,8 @@ import os
 
 fill_mode = False
 fill_color = 'red'
+colors = ['white', 'red', 'blue', 'green', 'white']
+date = date.today()
 
 #activity_data = [] #stores the color values of all timeslots/Button UPON SAVING
 
@@ -16,11 +18,10 @@ if os.path.exists('data.csv') == False:
 root = Tk()
 root.title("Time Matrix")
 
+blank_image = PhotoImage()
+
 grid_frame = LabelFrame(root, padx=10, pady=10)
 grid_frame.pack()
-
-blank_image = PhotoImage()
-colors = ['white', 'red', 'blue', 'green', 'white']
 
 #Defining the Button function(s)
 
@@ -68,8 +69,7 @@ def loadgrid(date, data=[]):
                         #print('def mode called')    
                         button_list[hr].append(Button(grid_frame, image=blank_image, height=h, width=w, bg=L[hr][mins] if p else 'white', borderwidth=4, command=lambda h=hr, m=mins: button_click_default(h, m)))
         
-loadgrid(date.today())
-
+loadgrid(date)
 
 #Inserting the grid buttons
 def insertgrid(button_list):
@@ -91,6 +91,7 @@ def deletegrid():
         for mins in range(no_of_minslots):
             button_list[hr][mins].destroy()
 
+#Refreshing the grid 
 def refresh_grid():
     global button_list
 
@@ -108,7 +109,7 @@ def refresh_grid():
                      
     deletegrid()
     button_list=[]
-    loadgrid(date.today(), activity_data)
+    loadgrid(date, activity_data)
     insertgrid(button_list)
 
 #Defining and inserting Grid Labels
@@ -134,11 +135,11 @@ for i in range(4):
 #Fill-Mode:
 
 #label
-filemode_frame = LabelFrame(grid_frame, width=60, height=27)
-filemode_frame.grid(row=5, column=1, columnspan=3)
-filemode_frame.pack_propagate(0)
-_filemode = Label(filemode_frame, text='Fill Mode:')
-_filemode.pack()
+fillmode_frame = LabelFrame(grid_frame, width=60, height=27)
+fillmode_frame.grid(row=5, column=1, columnspan=3)
+fillmode_frame.pack_propagate(0)
+_fillmode = Label(fillmode_frame, text='Fill Mode:')
+_fillmode.pack()
 
 #toggle-button
 def fmt(): #Fill mode toggle button function
@@ -174,11 +175,11 @@ FM_toggle_button.grid(row=5, column=4, columnspan=2, sticky=N+S+E+W)
 #Fill-Color
 
 #label
-filecolor_frame = LabelFrame(grid_frame, width=60, height=27)
-filecolor_frame.grid(row=6, column=1, columnspan=3)
-filecolor_frame.pack_propagate(0)
-_filecolor = Label(filecolor_frame, text='Fill Color:')
-_filecolor.pack()
+fillcolor_frame = LabelFrame(grid_frame, width=60, height=27)
+fillcolor_frame.grid(row=6, column=1, columnspan=3)
+fillcolor_frame.pack_propagate(0)
+_fillcolor = Label(fillcolor_frame, text='Fill Color:')
+_fillcolor.pack()
 
 #button
 def fcf(): #Fill color function
@@ -213,28 +214,30 @@ clear_all.grid(row=5, column=19, columnspan=3)
 #Save button
 
 #func
-def _save_(): #Saves all the color values in the list activity_data
-        activity_data = [] 
-        no_of_hrs = len(button_list)
-        for hr in range(no_of_hrs):
-                activity_data.append([])
-                no_of_minslots = len(button_list[hr])
-                for mins in range(no_of_minslots):
-                        button = button_list[hr][mins]
-                        bg = button.cget('bg')
-                        activity_data[hr].append(bg)
-        #print(activity_data)
-        flatlist=[date.today()]
-        hp.reemovNestings(activity_data, flatlist)
-        #print(fh.csv_isExist(str(date.today())))
-        if fh.csv_isExist(str(date.today())):
-                fh.replace_row(date.today(), flatlist)	
-        else:
-                fh.csv_append(flatlist)
-			
+def _save_(): #Saves all the color values in the list activity_data	
+    activity_data = [] 
+    no_of_hrs = len(button_list)
+    for hr in range(no_of_hrs):
+            activity_data.append([])
+            no_of_minslots = len(button_list[hr])
+            for mins in range(no_of_minslots):
+                    button = button_list[hr][mins]
+                    bg = button.cget('bg')
+                    activity_data[hr].append(bg)
+    #print(activity_data)
+    flatlist=[date.today()]
+    hp.reemovNestings(activity_data, flatlist)
+    #print(fh.csv_isExist(str(date.today())))
+    if fh.csv_isExist(str(date.today())):
+            fh.replace_row(date.today(), flatlist)  
+    else:
+            fh.csv_append(flatlist)		
+                
 #code
 save = Button(grid_frame, text='Save', width=7, command=_save_)
 save.grid(row=5, column=22, columnspan=3)
+
+
 
 
 root.mainloop()
