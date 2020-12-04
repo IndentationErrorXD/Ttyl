@@ -7,7 +7,7 @@ import os
 
 fill_mode = False
 fill_color = 'red'
-colors = ['white', 'red', 'blue', 'green', 'white']
+colors = ['white', 'red', 'blue', 'green', 'yellow', 'white']
 date = date.today()
 
 #activity_data = [] #stores the color values of all timeslots/Button UPON SAVING
