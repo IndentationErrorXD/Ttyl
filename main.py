@@ -1,6 +1,6 @@
 from tkinter import *
 from tkcalendar import DateEntry
-from datetime import date
+from datetime import date, timedelta
 import file_handling as fh
 import help_functions as hp
 import os
@@ -253,9 +253,28 @@ def when_date_changed(e):
 
 picker_frame = LabelFrame(root)
 picker_frame.grid(row=7, column=0, columnspan=25)
+
 cal = DateEntry(picker_frame, width=12, year=2019, month=6, day=22, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd-mm-yyyy')
-cal.grid(row=0, column=1, padx=100)
+cal.grid(row=0, column=1, padx=10)
 cal.bind('<<DateEntrySelected>>', when_date_changed)
 cal.set_date(date)
+
+def r_arrow():
+    global date
+    date+=timedelta(1)
+    cal.set_date(date)
+    when_date_changed(0)
+
+r_arrow = Button(picker_frame, text='🢂', command=r_arrow)
+r_arrow.grid(row=0, column=2)
+
+def l_arrow():
+    global date
+    date-=timedelta(1)
+    cal.set_date(date)
+    when_date_changed(0)
+
+l_arrow = Button(picker_frame, text='🢀', command=l_arrow)
+l_arrow.grid(row=0, column=0)
 
 root.mainloop()
