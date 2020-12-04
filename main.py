@@ -1,4 +1,5 @@
 from tkinter import *
+from tkcalendar import DateEntry
 from datetime import date
 import file_handling as fh
 import help_functions as hp
@@ -240,8 +241,15 @@ save.grid(row=5, column=22, columnspan=3)
 '''
 Date-Picker
 '''
+def when_date_changed(e):
+    date=cal.get_date()
+    print(date)
+
 picker_frame = LabelFrame(root)
 picker_frame.grid(row=7, column=0, columnspan=25)
-Label(picker_frame, text='test').pack()
+cal = DateEntry(picker_frame, width=12, year=2019, month=6, day=22, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd-mm-yyyy')
+cal.grid(row=0, column=1, padx=100)
+cal.bind('<<DateEntrySelected>>', when_date_changed)
+cal.set_date(date)
 
 root.mainloop()
