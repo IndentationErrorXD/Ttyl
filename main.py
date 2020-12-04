@@ -27,15 +27,13 @@ grid_frame.grid(row=0, column=0, columnspan=25, rowspan=6)
 #Defining the Button function(s)
 
 def button_click_default(hr_index, min_index):
-    button = button_list[hr_index][min_index]
-    print(fill_mode, fill_color)       
+    button = button_list[hr_index][min_index]    
     bg = button.cget('bg')
     index = colors.index(bg)
     button_list[hr_index][min_index].config(bg=colors[index+1])
 
 def button_click_fill_mode(hr_index, min_index, fill_color):
-    button = button_list[hr_index][min_index]
-    print(fill_mode, fill_color)       
+    button = button_list[hr_index][min_index]      
     button_list[hr_index][min_index].config(bg=fill_color)    
 
 #Defining the grid buttons:
@@ -44,9 +42,10 @@ h=10 #height
 w=10 #width
 button_list = [] #List of button objects
 def loadgrid(date, data=[]):
+        #print(dat)
         global fill_mode
         global fill_color
-        #print('loadgrid called')
+
         h=10 #height
         w=10 #width
         L=data
@@ -59,7 +58,7 @@ def loadgrid(date, data=[]):
                             p=True
                             for l in range(1,len(x),4):
                                     L.append(x[l:l+4])                            
-
+                          
         for hr in range(0, 23+1):  #iterating throught the 24hrs of the day
                 button_list.append([])
                 for mins in range(0, 3+1):#iterating thru 4 15min slots of 1 hr
@@ -226,11 +225,11 @@ def _save_(): #Saves all the color values in the list activity_data
                     bg = button.cget('bg')
                     activity_data[hr].append(bg)
     #print(activity_data)
-    flatlist=[date.today()]
+    flatlist=[date]
     hp.reemovNestings(activity_data, flatlist)
     #print(fh.csv_isExist(str(date.today())))
-    if fh.csv_isExist(str(date.today())):
-            fh.replace_row(date.today(), flatlist)  
+    if fh.csv_isExist(str(date)):
+            fh.replace_row(date, flatlist)  
     else:
             fh.csv_append(flatlist)		
 
@@ -242,8 +241,15 @@ save.grid(row=5, column=22, columnspan=3)
 Date-Picker
 '''
 def when_date_changed(e):
+    global button_list
+    global date
+
     date=cal.get_date()
     print(date)
+    deletegrid()
+    button_list=[]
+    loadgrid(date, data=[])
+    insertgrid(button_list)
 
 picker_frame = LabelFrame(root)
 picker_frame.grid(row=7, column=0, columnspan=25)
