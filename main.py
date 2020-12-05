@@ -1,9 +1,12 @@
 from tkinter import *
 from tkcalendar import DateEntry
 from datetime import date, timedelta
+import os
+
+#prog modules
 import file_handling as fh
 import help_functions as hp
-import os
+
 
 fill_mode = False
 fill_color = 'red'
@@ -13,8 +16,9 @@ date = date.today()
 #activity_data = [] #stores the color values of all timeslots/Button UPON SAVING
 
 #print(date.fromisoformat(str(date.today())).weekday())
-if os.path.exists('data.csv') == False:
+if os.path.exists("Data1.csv") == False:
 	fh.initialize()
+	
 
 root = Tk()
 root.title("Time Matrix")

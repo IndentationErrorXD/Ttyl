@@ -11,21 +11,20 @@ for i in range(24):
 #print(fields)
 
 # name of csv file
-filename = "data.csv"
 
-def initialize():
+def initialize(filename="Data1.csv"):
         with open(filename, 'w', newline = '\n') as csvfile:
                 csvwriter = csv.writer(csvfile)  # creating a csv writer object		
                 #csvwriter.writerow(fields)
-                print('New file "data.csv" created!')
+                print('New file ',filename,' created!')
 
-def csv_append(lst):
+def csv_append(lst,filename="Data1.csv"):
         with open(filename, 'a', newline = '\n') as csvfile:
                 csvwriter = csv.writer(csvfile)  # creating a csv writer object		
                 csvwriter.writerow(lst)
-                print('1 row added to data.csv')
+                print('1 row added to ',filename)
 
-def getrows():
+def getrows(filename="Data1.csv"):
         rows=[]
         with open(filename) as csvfile:
                 csvreader = csv.reader(csvfile)  # creating a csv reader object	                                                                                                                       	
@@ -33,7 +32,7 @@ def getrows():
                         rows.append(x)
         return rows	
 
-def csv_isExist(date):
+def csv_isExist(date,filename="Data1.csv"):
 	with open(filename, 'r') as csvfile:
 		rows = getrows()
 		isExist = False
@@ -43,8 +42,8 @@ def csv_isExist(date):
 				break
 		return isExist		
 
-def replace_row(date, row_list):
-        with open('data.csv') as inf, open('data_temp.csv', 'w', newline='\n') as outf:
+def replace_row(date, row_list,filename="Data1.csv"):
+        with open(filename) as inf, open('data_temp.csv', 'w', newline='\n') as outf:
                 reader = csv.reader(inf)
                 writer = csv.writer(outf)
                 for line in reader:
