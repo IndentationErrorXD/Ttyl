@@ -18,10 +18,38 @@ date = date.today()
 #print(date.fromisoformat(str(date.today())).weekday())
 if os.path.exists("Data1.csv") == False:
 	fh.initialize()
-	
 
-root = Tk()
-root.title("Time Matrix")
+#from functools import partial
+"""
+#User Selection Window
+def validateLogin(username, password):
+        if usernmame==username.get()
+ """       
+
+userwin = Tk()  
+userwin.geometry('400x150')  
+userwin.title('ttyl-User Selection Window')
+
+#username label and text entry box
+usernameLabel = Label(userwin, text="User Name").grid(row=0, column=0)
+username = StringVar()
+usernameEntry = Entry(userwin, textvariable=username).grid(row=0, column=1)  
+
+#password label and password entry box
+passwordLabel = Label(userwin,text="Password").grid(row=1, column=0)  
+password = StringVar()
+passwordEntry = Entry(userwin, textvariable=password, show='*').grid(row=1, column=1)  
+
+#validateLogin = partial(validateLogin, username, password)
+#validate=validateLogin(username, password)
+
+#login button
+loginButton = Button(userwin, text="Login", command=lambda:[matrixwin,userwin.destroy()]).grid(row=4, column=0)  
+
+def matrixwin():
+        global root
+        root=Tk()
+        root.title("Time Matrix")
 
 blank_image = PhotoImage()
 
