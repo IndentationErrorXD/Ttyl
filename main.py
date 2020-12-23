@@ -257,6 +257,7 @@ Date-Picker
 '''
 def when_date_changed(e):
     global button_list
+    global unsaved_changes
     global date
 
     _date=cal.get_date()
@@ -265,8 +266,17 @@ def when_date_changed(e):
     	cal.set_date(date)
     	messagebox.showwarning('Time travel Not possible', "Cannot select future date")
     else:
+        
+        if unsaved_changes==True:
+            save_qn = messagebox.askyesno('Confirm Save', "Save changes?")
+            if save_qn==True:
+                _save_()
+            elif save_qn==False:
+                unsaved_changes=False
+             
         date = _date
         print(date)
+
         deletegrid()
         button_list=[]
         loadgrid(date, data=[])
