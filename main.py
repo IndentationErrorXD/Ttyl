@@ -338,49 +338,57 @@ unfill.grid(row=6, column=0, sticky=align)
 
 start_date = date-timedelta(7)
 end_date = date
-range_in_focus = []
 
-study_count, waste_count, class_count, da_count, unfill_count = 0,0,0,0,0
+def refresh_analytics():
+    global start_date
+    global end_date
+    range_in_focus = []
 
-rows = fh.getrows()
-for row in rows:
-    date = datetime.strptime(row[0], '%Y-%m-%d').date()
-    if start_date<date<end_date:
-        range_in_focus.append(row)
+    study_count, waste_count, class_count, da_count, unfill_count = 0,0,0,0,0
 
-days_filled=len(range_in_focus)
-flatrows=[]
-hp.reemovNestings(rows, flatrows)
+    rows = fh.getrows()
+    for row in rows:
+        date = datetime.strptime(row[0], '%Y-%m-%d').date()
+        if start_date<date<end_date:
+            range_in_focus.append(row)
 
-for x in flatrows:
-    if x=='green':
-        study_count+=1
-    elif x=='red':
-        waste_count+=1
-    elif x=='blue':
-        class_count+=1
-    elif x=='yellow':
-        da_count+=1
-    elif x=='white':
-        unfill_count+=1
+    days_filled=len(range_in_focus)
+    flatrows=[]
+    hp.reemovNestings(rows, flatrows)
 
-def slots_to_time(num):
-    hrs = num*15//60
-    mins = num%60
-    return f"{hrs}hrs {mins}mins"
+    for x in flatrows:
+        if x=='green':
+            study_count+=1
+        elif x=='red':
+            waste_count+=1
+        elif x=='blue':
+            class_count+=1
+        elif x=='yellow':
+            da_count+=1
+        elif x=='white':
+            unfill_count+=1
 
-_days_count = Label(analytics_frame, text=days_filled)
-_study_count = Label(analytics_frame, text=slots_to_time(study_count))
-_waste_count = Label(analytics_frame, text=slots_to_time(waste_count))
-_class_count= Label(analytics_frame, text=slots_to_time(class_count))
-_da_count= Label(analytics_frame, text=slots_to_time(da_count))
-_unfill_count = Label(analytics_frame, text=slots_to_time(unfill_count))
+    def slots_to_time(num):
+        hrs = num*15//60
+        mins = (num*15)%60
+        return f"{hrs}hrs {mins}mins"
 
-_days_count.grid(row=1, column=1)
-_study_count.grid(row=2, column=1)
-_waste_count.grid(row=3, column=1)
-_class_count.grid(row=4, column=1)
-_da_count.grid(row=5, column=1)
-_unfill_count.grid(row=6, column=1)
+    _days_count = Label(analytics_frame, text=days_filled)
+    _study_count = Label(analytics_frame, text=slots_to_time(study_count))
+    _waste_count = Label(analytics_frame, text=slots_to_time(waste_count))
+    _class_count= Label(analytics_frame, text=slots_to_time(class_count))
+    _da_count= Label(analytics_frame, text=slots_to_time(da_count))
+    _unfill_count = Label(analytics_frame, text=slots_to_time(unfill_count))
+
+    _days_count.grid(row=1, column=1)
+    _study_count.grid(row=2, column=1)
+    _waste_count.grid(row=3, column=1)
+    _class_count.grid(row=4, column=1)
+    _da_count.grid(row=5, column=1)
+    _unfill_count.grid(row=6, column=1)
+refresh_analytics()
+
+refresh = Button(analytics_frame, text="Refesh", command=refresh_analytics)
+refresh.grid(row=7, column=1, sticky='ES', columnspan=2)
 
 root.mainloop()
