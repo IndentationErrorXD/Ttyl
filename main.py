@@ -171,7 +171,7 @@ def fmt(): #Fill mode toggle button function
         print('DEVELOPER ERROR')       
 
 FM_toggle_button = Button(grid_frame, text='Off', bg='light grey', command=fmt)
-FM_toggle_button.grid(row=5, column=4, columnspan=2, sticky=N+S+E+W)
+FM_toggle_button.grid(row=5, column=4, columnspan=3, sticky=N+S+E+W)
 
 #Fill-Color
 
@@ -191,6 +191,7 @@ def fcf(): #Fill color function
     bg = b.cget('bg')
     index = colors.index(bg)
     next_color=colors[index+1]
+    capitalized_next_color = next_color[0].upper() + next_color[1::]
     fill_color=next_color
     b.config(bg=next_color)
     b.config(text=next_color) 
@@ -198,7 +199,7 @@ def fcf(): #Fill color function
     refresh_grid()   
 
 FC_toggle_button = Button(grid_frame, text=fill_color, bg='light grey', command=fcf, state=DISABLED)
-FC_toggle_button.grid(row=6, column=4, columnspan=2, sticky=N+S+E+W)
+FC_toggle_button.grid(row=6, column=4, columnspan=3, sticky=N+S+E+W)
 
 
 #Clear all button
