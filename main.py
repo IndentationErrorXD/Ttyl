@@ -342,6 +342,21 @@ unfill.grid(row=n+5, column=0, sticky=align)
 start_date = date-timedelta(7)
 end_date = date
 
+_days_count = Label(analytics_frame, text='0')
+_study_count = Label(analytics_frame, text='00hrs 00mins')
+_waste_count = Label(analytics_frame, text='00hrs 00mins')
+_class_count= Label(analytics_frame, text='00hrs 00mins')
+_da_count= Label(analytics_frame, text='00hrs 00mins')
+_unfill_count = Label(analytics_frame, text='00hrs 00mins')
+
+n=3
+_days_count.grid(row=n, column=1)
+_study_count.grid(row=n+1, column=1)
+_waste_count.grid(row=n+2, column=1)
+_class_count.grid(row=n+3, column=1)
+_da_count.grid(row=n+4, column=1)
+_unfill_count.grid(row=n+5, column=1)
+
 def refresh_analytics():
     global start_date
     global end_date
@@ -352,44 +367,35 @@ def refresh_analytics():
     rows = fh.getrows()
     for row in rows:
         date = datetime.strptime(row[0], '%Y-%m-%d').date()
-        if start_date<date<end_date:
+        if start_date<=date<=end_date:
             range_in_focus.append(row)
 
     days_filled=len(range_in_focus)
-    flatrows=[]
-    hp.reemovNestings(rows, flatrows)
-
-    for x in flatrows:
-        if x=='green':
-            study_count+=1
-        elif x=='red':
-            waste_count+=1
-        elif x=='blue':
-            class_count+=1
-        elif x=='yellow':
-            da_count+=1
-        elif x=='white':
-            unfill_count+=1
+    
+    for rows in range_in_focus:
+        for x in rows:
+            if x=='green':
+                study_count+=1
+            elif x=='red':
+                waste_count+=1
+            elif x=='blue':
+                class_count+=1
+            elif x=='yellow':
+                da_count+=1
+            elif x=='white':
+                unfill_count+=1
 
     def slots_to_time(num):
         hrs = num*15//60
         mins = (num*15)%60
         return f"{hrs}hrs {mins}mins"
-
-    _days_count = Label(analytics_frame, text=days_filled)
-    _study_count = Label(analytics_frame, text=slots_to_time(study_count))
-    _waste_count = Label(analytics_frame, text=slots_to_time(waste_count))
-    _class_count= Label(analytics_frame, text=slots_to_time(class_count))
-    _da_count= Label(analytics_frame, text=slots_to_time(da_count))
-    _unfill_count = Label(analytics_frame, text=slots_to_time(unfill_count))
-
-    n=3
-    _days_count.grid(row=n, column=1)
-    _study_count.grid(row=n+1, column=1)
-    _waste_count.grid(row=n+2, column=1)
-    _class_count.grid(row=n+3, column=1)
-    _da_count.grid(row=n+4, column=1)
-    _unfill_count.grid(row=n+5, column=1)
+    
+    _days_count.config(text=days_filled)
+    _study_count.config(text=slots_to_time(study_count))
+    _waste_count.config(text=slots_to_time(waste_count))
+    _class_count.config(text=slots_to_time(class_count))
+    _da_count.config(text=slots_to_time(da_count))
+    _unfill_count.config(text=slots_to_time(unfill_count))
 refresh_analytics()
 
 refresh = Button(analytics_frame, text="Refesh", command=refresh_analytics)
@@ -397,14 +403,46 @@ refresh.grid(row=9, column=1, sticky='ES', columnspan=2)
 
 #Calendars
 
+def from_cal_changed(e):
+    print("From cal changed")
+    global start_date
+    _date=from_cal.get_date()
+
+    if _date>date.today():
+    	from_cal.set_date(start_date)
+    	messagebox.showwarning('Time travel Not possible', "Cannot select future date")
+    elif _date>end_date:
+        from_cal.set_date(start_date)
+        messagebox.showwarning("User Error", "From date cannot exceed To-date.\nPlease set to-date first")
+    else:
+        start_date=_date
+        refresh_analytics()
+
+def to_cal_changed(e):
+    print("To cal changed")
+    global end_date
+    _date=to_cal.get_date()
+
+    if _date>date.today():
+    	to_cal.set_date(end_date)
+    	messagebox.showwarning('Time travel Not possible', "Cannot select future date")
+    elif _date<start_date:
+        to_cal.set_date(end_date)
+        messagebox.showwarning("User Error", "From date cannot preceed from-date.\nPlease set from-date first")
+    else:
+        end_date=_date
+        refresh_analytics()
+
 #from:
 from_cal = DateEntry(analytics_frame, width=9, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd/mm/yy')
 from_cal.grid(row=2, column=0)
-#from_cal.set_date(start_date)
+from_cal.set_date(start_date)
+from_cal.bind('<<DateEntrySelected>>', from_cal_changed)
 
 #to:
 to_cal = DateEntry(analytics_frame, width=9, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd/mm/yy')
 to_cal.grid(row=2, column=1)
 to_cal.set_date(end_date)
+to_cal.bind('<<DateEntrySelected>>', to_cal_changed)
 
 root.mainloop()
