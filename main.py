@@ -210,9 +210,12 @@ FC_toggle_button.grid(row=6, column=4, columnspan=3, sticky=N+S+E+W)
 
 #func
 def clear_all():
-	for hrlist in button_list:
-		for button in hrlist:
-			button.config(bg='white') 
+    global unsaved_changes
+    for hrlist in button_list:
+        for button in hrlist:
+            button.config(bg='white')
+    unsaved_changes=True         
+
 #code
 clear_all = Button(grid_frame, text='Clear all', width=7, command=clear_all)
 clear_all.grid(row=5, column=19, columnspan=3)
