@@ -288,7 +288,7 @@ def when_date_changed(e):
 picker_frame = LabelFrame(root)
 picker_frame.grid(row=7, column=0, columnspan=25)
 
-cal = DateEntry(picker_frame, width=12, year=2019, month=6, day=22, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd-mm-yyyy')
+cal = DateEntry(picker_frame, width=12, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd-mm-yyyy')
 cal.grid(row=0, column=1, padx=10)
 cal.bind('<<DateEntrySelected>>', when_date_changed)
 cal.set_date(date)
@@ -318,7 +318,8 @@ Analytics
 analytics_frame = LabelFrame(root, text='Analytics', padx=10, pady=10)
 analytics_frame.grid(row=0, column=26)
 
-data = Label(analytics_frame, text="Data from last week:")
+from_lbl = Label(analytics_frame, text='From:')
+to_lbl = Label(analytics_frame, text='To:')
 days_f = Label(analytics_frame, text="Days filled:")
 study = Label(analytics_frame, text="Studied:")
 waste = Label(analytics_frame, text="Relaxing:")
@@ -326,14 +327,16 @@ _class= Label(analytics_frame, text="Class Hours:")
 d_activities= Label(analytics_frame, text="Daily activities:")
 unfill = Label(analytics_frame, text="Unfilled:")
 
+n=3
 align = 'W'
-data.grid(row=0,column=0, columnspan=2)
-days_f.grid(row=1,column=0, sticky=align)
-study.grid(row=2,column=0, sticky=align)
-waste.grid(row=3,column=0, sticky=align)
-_class.grid(row=4,column=0, sticky=align)
-d_activities.grid(row=5,column=0, sticky=align)
-unfill.grid(row=6, column=0, sticky=align)
+from_lbl.grid(row=1, column=0,sticky=W)
+to_lbl.grid(row=1, column=1, sticky=W)
+days_f.grid(row=n,column=0, sticky=align)
+study.grid(row=n+1,column=0, sticky=align)
+waste.grid(row=n+2,column=0, sticky=align)
+_class.grid(row=n+3,column=0, sticky=align)
+d_activities.grid(row=n+4,column=0, sticky=align)
+unfill.grid(row=n+5, column=0, sticky=align)
 #--------------------------------------------------------------
 
 start_date = date-timedelta(7)
@@ -380,15 +383,28 @@ def refresh_analytics():
     _da_count= Label(analytics_frame, text=slots_to_time(da_count))
     _unfill_count = Label(analytics_frame, text=slots_to_time(unfill_count))
 
-    _days_count.grid(row=1, column=1)
-    _study_count.grid(row=2, column=1)
-    _waste_count.grid(row=3, column=1)
-    _class_count.grid(row=4, column=1)
-    _da_count.grid(row=5, column=1)
-    _unfill_count.grid(row=6, column=1)
+    n=3
+    _days_count.grid(row=n, column=1)
+    _study_count.grid(row=n+1, column=1)
+    _waste_count.grid(row=n+2, column=1)
+    _class_count.grid(row=n+3, column=1)
+    _da_count.grid(row=n+4, column=1)
+    _unfill_count.grid(row=n+5, column=1)
 refresh_analytics()
 
 refresh = Button(analytics_frame, text="Refesh", command=refresh_analytics)
-refresh.grid(row=7, column=1, sticky='ES', columnspan=2)
+refresh.grid(row=9, column=1, sticky='ES', columnspan=2)
+
+#Calendars
+
+#from:
+from_cal = DateEntry(analytics_frame, width=9, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd/mm/yy')
+from_cal.grid(row=2, column=0)
+#from_cal.set_date(start_date)
+
+#to:
+to_cal = DateEntry(analytics_frame, width=9, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd/mm/yy')
+to_cal.grid(row=2, column=1)
+to_cal.set_date(end_date)
 
 root.mainloop()
