@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import tkinter.font as tkfont
 from tkcalendar import DateEntry
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 import file_handling as fh
 import help_functions as hp
 import os
@@ -248,7 +248,7 @@ def _save_(): #Saves all the color values in the list activity_data
 save = Button(grid_frame, text='Save', width=7, command=_save_)
 save.grid(row=5, column=22, columnspan=3)
 
-color_info = Label(grid_frame, font=tkfont.Font(size=7),text="🛈 Green: Studied, Red: Wasted, Blue: Class, Yellow: Daily Activities, White: Sleep")
+color_info = Label(grid_frame, font=tkfont.Font(size=7),text="🛈 Green: Studied, Red: Wasted, Blue: Class, Yellow: Daily Activities, White: Unfilled")
 color_info.grid(row=6, column=7, columnspan=18, sticky='ES')
 
 
@@ -288,7 +288,7 @@ def when_date_changed(e):
 picker_frame = LabelFrame(root)
 picker_frame.grid(row=7, column=0, columnspan=25)
 
-cal = DateEntry(picker_frame, width=12, year=2019, month=6, day=22, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd-mm-yyyy')
+cal = DateEntry(picker_frame, width=12, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd-mm-yyyy')
 cal.grid(row=0, column=1, padx=10)
 cal.bind('<<DateEntrySelected>>', when_date_changed)
 cal.set_date(date)
@@ -310,5 +310,139 @@ def l_arrow():
 
 l_arrow = Button(picker_frame, text='🢀', command=l_arrow)
 l_arrow.grid(row=0, column=0)
+
+'''
+Analytics
+'''
+
+analytics_frame = LabelFrame(root, text='Analytics', padx=10, pady=10)
+analytics_frame.grid(row=0, column=26)
+
+from_lbl = Label(analytics_frame, text='From:')
+to_lbl = Label(analytics_frame, text='To:')
+days_f = Label(analytics_frame, text="Days filled:")
+study = Label(analytics_frame, text="Studied:")
+waste = Label(analytics_frame, text="Relaxing:")
+_class= Label(analytics_frame, text="Class Hours:")
+d_activities= Label(analytics_frame, text="Daily activities:")
+unfill = Label(analytics_frame, text="Unfilled:")
+
+n=3
+align = 'W'
+from_lbl.grid(row=1, column=0,sticky=W)
+to_lbl.grid(row=1, column=1, sticky=W)
+days_f.grid(row=n,column=0, sticky=align)
+study.grid(row=n+1,column=0, sticky=align)
+waste.grid(row=n+2,column=0, sticky=align)
+_class.grid(row=n+3,column=0, sticky=align)
+d_activities.grid(row=n+4,column=0, sticky=align)
+unfill.grid(row=n+5, column=0, sticky=align)
+#--------------------------------------------------------------
+
+start_date = date-timedelta(7)
+end_date = date
+
+_days_count = Label(analytics_frame, text='0')
+_study_count = Label(analytics_frame, text='00hrs 00mins')
+_waste_count = Label(analytics_frame, text='00hrs 00mins')
+_class_count= Label(analytics_frame, text='00hrs 00mins')
+_da_count= Label(analytics_frame, text='00hrs 00mins')
+_unfill_count = Label(analytics_frame, text='00hrs 00mins')
+
+n=3
+_days_count.grid(row=n, column=1)
+_study_count.grid(row=n+1, column=1)
+_waste_count.grid(row=n+2, column=1)
+_class_count.grid(row=n+3, column=1)
+_da_count.grid(row=n+4, column=1)
+_unfill_count.grid(row=n+5, column=1)
+
+def refresh_analytics():
+    global start_date
+    global end_date
+    range_in_focus = []
+
+    study_count, waste_count, class_count, da_count, unfill_count = 0,0,0,0,0
+
+    rows = fh.getrows()
+    for row in rows:
+        date = datetime.strptime(row[0], '%Y-%m-%d').date()
+        if start_date<=date<=end_date:
+            range_in_focus.append(row)
+
+    days_filled=len(range_in_focus)
+    
+    for rows in range_in_focus:
+        for x in rows:
+            if x=='green':
+                study_count+=1
+            elif x=='red':
+                waste_count+=1
+            elif x=='blue':
+                class_count+=1
+            elif x=='yellow':
+                da_count+=1
+            elif x=='white':
+                unfill_count+=1
+
+    def slots_to_time(num):
+        hrs = num*15//60
+        mins = (num*15)%60
+        return f"{hrs}hrs {mins}mins"
+    
+    _days_count.config(text=days_filled)
+    _study_count.config(text=slots_to_time(study_count))
+    _waste_count.config(text=slots_to_time(waste_count))
+    _class_count.config(text=slots_to_time(class_count))
+    _da_count.config(text=slots_to_time(da_count))
+    _unfill_count.config(text=slots_to_time(unfill_count))
+refresh_analytics()
+
+refresh = Button(analytics_frame, text="Refesh", command=refresh_analytics)
+refresh.grid(row=9, column=1, sticky='ES', columnspan=2)
+
+#Calendars
+
+def from_cal_changed(e):
+    print("From cal changed")
+    global start_date
+    _date=from_cal.get_date()
+
+    if _date>date.today():
+    	from_cal.set_date(start_date)
+    	messagebox.showwarning('Time travel Not possible', "Cannot select future date")
+    elif _date>end_date:
+        from_cal.set_date(start_date)
+        messagebox.showwarning("User Error", "From date cannot exceed To-date.\nPlease set to-date first")
+    else:
+        start_date=_date
+        refresh_analytics()
+
+def to_cal_changed(e):
+    print("To cal changed")
+    global end_date
+    _date=to_cal.get_date()
+
+    if _date>date.today():
+    	to_cal.set_date(end_date)
+    	messagebox.showwarning('Time travel Not possible', "Cannot select future date")
+    elif _date<start_date:
+        to_cal.set_date(end_date)
+        messagebox.showwarning("User Error", "From date cannot preceed from-date.\nPlease set from-date first")
+    else:
+        end_date=_date
+        refresh_analytics()
+
+#from:
+from_cal = DateEntry(analytics_frame, width=9, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd/mm/yy')
+from_cal.grid(row=2, column=0)
+from_cal.set_date(start_date)
+from_cal.bind('<<DateEntrySelected>>', from_cal_changed)
+
+#to:
+to_cal = DateEntry(analytics_frame, width=9, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd/mm/yy')
+to_cal.grid(row=2, column=1)
+to_cal.set_date(end_date)
+to_cal.bind('<<DateEntrySelected>>', to_cal_changed)
 
 root.mainloop()
