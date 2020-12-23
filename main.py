@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 import tkinter.font as tkfont
 from tkcalendar import DateEntry
 from datetime import date, timedelta
@@ -253,12 +254,18 @@ def when_date_changed(e):
     global button_list
     global date
 
-    date=cal.get_date()
-    print(date)
-    deletegrid()
-    button_list=[]
-    loadgrid(date, data=[])
-    insertgrid(button_list)
+    _date=cal.get_date()
+
+    if _date>date.today():
+    	cal.set_date(date)
+    	messagebox.showwarning('Time travel Not possible', "Cannot select future date")
+    else:
+        date = _date
+        print(date)
+        deletegrid()
+        button_list=[]
+        loadgrid(date, data=[])
+        insertgrid(button_list)
 
 picker_frame = LabelFrame(root)
 picker_frame.grid(row=7, column=0, columnspan=25)
@@ -270,8 +277,8 @@ cal.set_date(date)
 
 def r_arrow():
     global date
-    date+=timedelta(1)
-    cal.set_date(date)
+    _date = date+timedelta(1)
+    cal.set_date(_date)
     when_date_changed(0)
 
 r_arrow = Button(picker_frame, text='🢂', command=r_arrow)
@@ -279,8 +286,8 @@ r_arrow.grid(row=0, column=2)
 
 def l_arrow():
     global date
-    date-=timedelta(1)
-    cal.set_date(date)
+    _date = date - timedelta(1)
+    cal.set_date(_date)
     when_date_changed(0)
 
 l_arrow = Button(picker_frame, text='🢀', command=l_arrow)
