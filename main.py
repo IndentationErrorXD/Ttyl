@@ -126,11 +126,11 @@ for i in range(24):
 	canvas_1_manage.create_text(6, 35, text = hour, angle = 90, anchor = "w")
 #MIN-labels
 for i in range(4):
-	label_frame = LabelFrame(grid_frame, height=20, width=40)
-	label_frame.grid(row=i+1, column=0)
-	label_frame.pack_propagate(0) # Stops child widgets of label_frame from resizing it
-	label = Label(label_frame, text ="{}-{}".format(i*15, (i+1)*15))
-	label.pack()
+	mins_frame = LabelFrame(grid_frame, height=20, width=40)
+	mins_frame.grid(row=i+1, column=0)
+	mins_frame.pack_propagate(0) # Stops child widgets of label_frame from resizing it
+	min_label = Label(mins_frame, text ="{}-{}".format(i*15, (i+1)*15))
+	min_label.pack()
 
 #Fill-Mode:
 
@@ -236,6 +236,13 @@ def _save_(): #Saves all the color values in the list activity_data
 #code
 save = Button(grid_frame, text='Save', width=7, command=_save_)
 save.grid(row=5, column=22, columnspan=3)
+
+
+
+
+
+
+
 
 '''
 Date-Picker
