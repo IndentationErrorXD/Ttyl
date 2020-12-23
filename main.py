@@ -1,4 +1,6 @@
 from tkinter import *
+from tkinter import messagebox
+import tkinter.font as tkfont
 from tkcalendar import DateEntry
 from datetime import date, timedelta
 import file_handling as fh
@@ -9,6 +11,7 @@ fill_mode = False
 fill_color = 'red'
 colors = ['white', 'red', 'blue', 'green', 'yellow', 'white']
 date = date.today()
+unsaved_changes=False
 
 #activity_data = [] #stores the color values of all timeslots/Button UPON SAVING
 
@@ -27,14 +30,18 @@ grid_frame.grid(row=0, column=0, columnspan=25, rowspan=6)
 #Defining the Button function(s)
 
 def button_click_default(hr_index, min_index):
-    button = button_list[hr_index][min_index]    
+    global unsaved_changes
+    button = button_list[hr_index][min_index]
     bg = button.cget('bg')
     index = colors.index(bg)
     button_list[hr_index][min_index].config(bg=colors[index+1])
+    unsaved_changes=True
 
 def button_click_fill_mode(hr_index, min_index, fill_color):
+    global unsaved_changes
     button = button_list[hr_index][min_index]      
-    button_list[hr_index][min_index].config(bg=fill_color)    
+    button.config(bg=fill_color)  
+    unsaved_changes=True  
 
 #Defining the grid buttons:
 
@@ -126,11 +133,11 @@ for i in range(24):
 	canvas_1_manage.create_text(6, 35, text = hour, angle = 90, anchor = "w")
 #MIN-labels
 for i in range(4):
-	label_frame = LabelFrame(grid_frame, height=20, width=40)
-	label_frame.grid(row=i+1, column=0)
-	label_frame.pack_propagate(0) # Stops child widgets of label_frame from resizing it
-	label = Label(label_frame, text ="{}-{}".format(i*15, (i+1)*15))
-	label.pack()
+	mins_frame = LabelFrame(grid_frame, height=20, width=40)
+	mins_frame.grid(row=i+1, column=0)
+	mins_frame.pack_propagate(0) # Stops child widgets of label_frame from resizing it
+	min_label = Label(mins_frame, text ="{}-{}".format(i*15, (i+1)*15))
+	min_label.pack()
 
 #Fill-Mode:
 
@@ -152,7 +159,6 @@ def fmt(): #Fill mode toggle button function
     if text=='Off':
         fill_mode=True
         FC_toggle_button.configure(state='normal')
-        fill_color='red'
         bc.config(bg='red')
         bc.config(text='red')
         b.config(text="On")
@@ -170,7 +176,7 @@ def fmt(): #Fill mode toggle button function
         print('DEVELOPER ERROR')       
 
 FM_toggle_button = Button(grid_frame, text='Off', bg='light grey', command=fmt)
-FM_toggle_button.grid(row=5, column=4, columnspan=2, sticky=N+S+E+W)
+FM_toggle_button.grid(row=5, column=4, columnspan=3, sticky=N+S+E+W)
 
 #Fill-Color
 
@@ -186,10 +192,10 @@ def fcf(): #Fill color function
     global button_list
     global fill_color
     b=FC_toggle_button
-    color = b.cget('bg')
     bg = b.cget('bg')
     index = colors.index(bg)
     next_color=colors[index+1]
+    capitalized_next_color = next_color[0].upper() + next_color[1::]
     fill_color=next_color
     b.config(bg=next_color)
     b.config(text=next_color) 
@@ -197,16 +203,19 @@ def fcf(): #Fill color function
     refresh_grid()   
 
 FC_toggle_button = Button(grid_frame, text=fill_color, bg='light grey', command=fcf, state=DISABLED)
-FC_toggle_button.grid(row=6, column=4, columnspan=2, sticky=N+S+E+W)
+FC_toggle_button.grid(row=6, column=4, columnspan=3, sticky=N+S+E+W)
 
 
 #Clear all button
 
 #func
 def clear_all():
-	for hrlist in button_list:
-		for button in hrlist:
-			button.config(bg='white') 
+    global unsaved_changes
+    for hrlist in button_list:
+        for button in hrlist:
+            button.config(bg='white')
+    unsaved_changes=True         
+
 #code
 clear_all = Button(grid_frame, text='Clear all', width=7, command=clear_all)
 clear_all.grid(row=5, column=19, columnspan=3)
@@ -215,6 +224,7 @@ clear_all.grid(row=5, column=19, columnspan=3)
 
 #func
 def _save_(): #Saves all the color values in the list activity_data	
+    global unsaved_changes
     activity_data = [] 
     no_of_hrs = len(button_list)
     for hr in range(no_of_hrs):
@@ -232,24 +242,48 @@ def _save_(): #Saves all the color values in the list activity_data
             fh.replace_row(date, flatlist)  
     else:
             fh.csv_append(flatlist)		
+    unsaved_changes=False   
 
 #code
 save = Button(grid_frame, text='Save', width=7, command=_save_)
 save.grid(row=5, column=22, columnspan=3)
+
+color_info = Label(grid_frame, font=tkfont.Font(size=7),text="🛈 Green: Studied, Red: Wasted, Blue: Class, Yellow: Daily Activities, White: Sleep")
+color_info.grid(row=6, column=7, columnspan=18, sticky='ES')
+
+
+
+
 
 '''
 Date-Picker
 '''
 def when_date_changed(e):
     global button_list
+    global unsaved_changes
     global date
 
-    date=cal.get_date()
-    print(date)
-    deletegrid()
-    button_list=[]
-    loadgrid(date, data=[])
-    insertgrid(button_list)
+    _date=cal.get_date()
+
+    if _date>date.today():
+    	cal.set_date(date)
+    	messagebox.showwarning('Time travel Not possible', "Cannot select future date")
+    else:
+        
+        if unsaved_changes==True:
+            save_qn = messagebox.askyesno('Confirm Save', "Save changes?")
+            if save_qn==True:
+                _save_()
+            elif save_qn==False:
+                unsaved_changes=False
+             
+        date = _date
+        print(date)
+
+        deletegrid()
+        button_list=[]
+        loadgrid(date, data=[])
+        insertgrid(button_list)
 
 picker_frame = LabelFrame(root)
 picker_frame.grid(row=7, column=0, columnspan=25)
@@ -261,8 +295,8 @@ cal.set_date(date)
 
 def r_arrow():
     global date
-    date+=timedelta(1)
-    cal.set_date(date)
+    _date = date+timedelta(1)
+    cal.set_date(_date)
     when_date_changed(0)
 
 r_arrow = Button(picker_frame, text='🢂', command=r_arrow)
@@ -270,8 +304,8 @@ r_arrow.grid(row=0, column=2)
 
 def l_arrow():
     global date
-    date-=timedelta(1)
-    cal.set_date(date)
+    _date = date - timedelta(1)
+    cal.set_date(_date)
     when_date_changed(0)
 
 l_arrow = Button(picker_frame, text='🢀', command=l_arrow)
