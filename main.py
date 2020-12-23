@@ -1,4 +1,5 @@
 from tkinter import *
+import tkinter.font as tkfont
 from tkcalendar import DateEntry
 from datetime import date, timedelta
 import file_handling as fh
@@ -237,8 +238,8 @@ def _save_(): #Saves all the color values in the list activity_data
 save = Button(grid_frame, text='Save', width=7, command=_save_)
 save.grid(row=5, column=22, columnspan=3)
 
-
-
+color_info = Label(grid_frame, font=tkfont.Font(size=7),text="🛈 Green: Studied, Red: Wasted, Blue: Class, Yellow: Daily Activities, White: Sleep")
+color_info.grid(row=6, column=7, columnspan=18, sticky='ES')
 
 
 
