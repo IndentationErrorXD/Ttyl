@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import tkinter.font as tkfont
 from tkcalendar import DateEntry
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 import file_handling as fh
 import help_functions as hp
 import os
@@ -248,7 +248,7 @@ def _save_(): #Saves all the color values in the list activity_data
 save = Button(grid_frame, text='Save', width=7, command=_save_)
 save.grid(row=5, column=22, columnspan=3)
 
-color_info = Label(grid_frame, font=tkfont.Font(size=7),text="🛈 Green: Studied, Red: Wasted, Blue: Class, Yellow: Daily Activities, White: Sleep")
+color_info = Label(grid_frame, font=tkfont.Font(size=7),text="🛈 Green: Studied, Red: Wasted, Blue: Class, Yellow: Daily Activities, White: Unfilled")
 color_info.grid(row=6, column=7, columnspan=18, sticky='ES')
 
 
@@ -310,5 +310,77 @@ def l_arrow():
 
 l_arrow = Button(picker_frame, text='🢀', command=l_arrow)
 l_arrow.grid(row=0, column=0)
+
+'''
+Analytics
+'''
+
+analytics_frame = LabelFrame(root, text='Analytics', padx=10, pady=10)
+analytics_frame.grid(row=0, column=26)
+
+data = Label(analytics_frame, text="Data from last week:")
+days_f = Label(analytics_frame, text="Days filled:")
+study = Label(analytics_frame, text="Studied:")
+waste = Label(analytics_frame, text="Relaxing:")
+_class= Label(analytics_frame, text="Class Hours:")
+d_activities= Label(analytics_frame, text="Daily activities:")
+unfill = Label(analytics_frame, text="Unfilled:")
+
+align = 'W'
+data.grid(row=0,column=0, columnspan=2)
+days_f.grid(row=1,column=0, sticky=align)
+study.grid(row=2,column=0, sticky=align)
+waste.grid(row=3,column=0, sticky=align)
+_class.grid(row=4,column=0, sticky=align)
+d_activities.grid(row=5,column=0, sticky=align)
+unfill.grid(row=6, column=0, sticky=align)
+#--------------------------------------------------------------
+
+start_date = date-timedelta(7)
+end_date = date
+range_in_focus = []
+
+study_count, waste_count, class_count, da_count, unfill_count = 0,0,0,0,0
+
+rows = fh.getrows()
+for row in rows:
+    date = datetime.strptime(row[0], '%Y-%m-%d').date()
+    if start_date<date<end_date:
+        range_in_focus.append(row)
+
+days_filled=len(range_in_focus)
+flatrows=[]
+hp.reemovNestings(rows, flatrows)
+
+for x in flatrows:
+    if x=='green':
+        study_count+=1
+    elif x=='red':
+        waste_count+=1
+    elif x=='blue':
+        class_count+=1
+    elif x=='yellow':
+        da_count+=1
+    elif x=='white':
+        unfill_count+=1
+
+def slots_to_time(num):
+    hrs = num*15//60
+    mins = num%60
+    return f"{hrs}hrs {mins}mins"
+
+_days_count = Label(analytics_frame, text=days_filled)
+_study_count = Label(analytics_frame, text=slots_to_time(study_count))
+_waste_count = Label(analytics_frame, text=slots_to_time(waste_count))
+_class_count= Label(analytics_frame, text=slots_to_time(class_count))
+_da_count= Label(analytics_frame, text=slots_to_time(da_count))
+_unfill_count = Label(analytics_frame, text=slots_to_time(unfill_count))
+
+_days_count.grid(row=1, column=1)
+_study_count.grid(row=2, column=1)
+_waste_count.grid(row=3, column=1)
+_class_count.grid(row=4, column=1)
+_da_count.grid(row=5, column=1)
+_unfill_count.grid(row=6, column=1)
 
 root.mainloop()
