@@ -11,6 +11,7 @@ fill_mode = False
 fill_color = 'red'
 colors = ['white', 'red', 'blue', 'green', 'yellow', 'white']
 date = date.today()
+unsaved_changes=False
 
 #activity_data = [] #stores the color values of all timeslots/Button UPON SAVING
 
@@ -29,14 +30,18 @@ grid_frame.grid(row=0, column=0, columnspan=25, rowspan=6)
 #Defining the Button function(s)
 
 def button_click_default(hr_index, min_index):
-    button = button_list[hr_index][min_index]    
+    global unsaved_changes
+    button = button_list[hr_index][min_index]
     bg = button.cget('bg')
     index = colors.index(bg)
     button_list[hr_index][min_index].config(bg=colors[index+1])
+    unsaved_changes=True
 
 def button_click_fill_mode(hr_index, min_index, fill_color):
+    global unsaved_changes
     button = button_list[hr_index][min_index]      
-    button_list[hr_index][min_index].config(bg=fill_color)    
+    button.config(bg=fill_color)  
+    unsaved_changes=True  
 
 #Defining the grid buttons:
 
@@ -154,7 +159,6 @@ def fmt(): #Fill mode toggle button function
     if text=='Off':
         fill_mode=True
         FC_toggle_button.configure(state='normal')
-        fill_color='red'
         bc.config(bg='red')
         bc.config(text='red')
         b.config(text="On")
@@ -188,7 +192,6 @@ def fcf(): #Fill color function
     global button_list
     global fill_color
     b=FC_toggle_button
-    color = b.cget('bg')
     bg = b.cget('bg')
     index = colors.index(bg)
     next_color=colors[index+1]
@@ -218,6 +221,7 @@ clear_all.grid(row=5, column=19, columnspan=3)
 
 #func
 def _save_(): #Saves all the color values in the list activity_data	
+    global unsaved_changes
     activity_data = [] 
     no_of_hrs = len(button_list)
     for hr in range(no_of_hrs):
@@ -235,6 +239,7 @@ def _save_(): #Saves all the color values in the list activity_data
             fh.replace_row(date, flatlist)  
     else:
             fh.csv_append(flatlist)		
+    unsaved_changes=False   
 
 #code
 save = Button(grid_frame, text='Save', width=7, command=_save_)
