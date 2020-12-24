@@ -392,11 +392,11 @@ def refresh_analytics():
         return f"{hrs}hrs {mins}mins"
     
     _days_count.config(text=days_filled)
-    _study_count.config(text=slots_to_time(study_count)+f"  ({round((study_count*100/total),2)}%)")
-    _waste_count.config(text=slots_to_time(waste_count)+f"  ({round((waste_count*100/total),2)}%)")
-    _class_count.config(text=slots_to_time(class_count)+f"  ({round((class_count*100/total),2)}%)")
-    _da_count.config(text=slots_to_time(da_count)+f"  ({round((da_count*100/total),2)}%)")
-    _unfill_count.config(text=slots_to_time(unfill_count)+f"  ({round((unfill_count*100/total),2)}%)")
+    _study_count.config(text=slots_to_time(study_count)+f"  ({round((study_count*100/total),2) if total!=0 else 0}%)")
+    _waste_count.config(text=slots_to_time(waste_count)+f"  ({round((waste_count*100/total),2) if total!=0 else 0}%)")
+    _class_count.config(text=slots_to_time(class_count)+f"  ({round((class_count*100/total),2) if total!=0 else 0}%)")
+    _da_count.config(text=slots_to_time(da_count)+f"  ({round((da_count*100/total),2) if total!=0 else 0}%)")
+    _unfill_count.config(text=slots_to_time(unfill_count)+f"  ({round((unfill_count*100/total),2) if total!=0 else 0}%)")
 refresh_analytics()
 
 refresh = Button(analytics_frame, text="Refesh", command=refresh_analytics)
