@@ -435,13 +435,13 @@ def to_cal_changed(e):
         refresh_analytics()
 
 #from:
-from_cal = DateEntry(analytics_frame, width=9, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd/mm/yy')
+from_cal = DateEntry(analytics_frame, width=10, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd-mm-yyyy')
 from_cal.grid(row=2, column=0)
 from_cal.set_date(start_date)
 from_cal.bind('<<DateEntrySelected>>', from_cal_changed)
 
 #to:
-to_cal = DateEntry(analytics_frame, width=9, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd/mm/yy')
+to_cal = DateEntry(analytics_frame, width=10, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd-mm-yyyy')
 to_cal.grid(row=2, column=1)
 to_cal.set_date(end_date)
 to_cal.bind('<<DateEntrySelected>>', to_cal_changed)
