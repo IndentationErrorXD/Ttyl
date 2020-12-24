@@ -362,7 +362,7 @@ def refresh_analytics():
     global end_date
     range_in_focus = []
 
-    study_count, waste_count, class_count, da_count, unfill_count = 0,0,0,0,0
+    study_count, waste_count, class_count, da_count, unfill_count, total = 0,0,0,0,0,0
 
     rows = fh.getrows()
     for row in rows:
@@ -374,6 +374,7 @@ def refresh_analytics():
     
     for rows in range_in_focus:
         for x in rows:
+            total+=1
             if x=='green':
                 study_count+=1
             elif x=='red':
@@ -391,11 +392,11 @@ def refresh_analytics():
         return f"{hrs}hrs {mins}mins"
     
     _days_count.config(text=days_filled)
-    _study_count.config(text=slots_to_time(study_count))
-    _waste_count.config(text=slots_to_time(waste_count))
-    _class_count.config(text=slots_to_time(class_count))
-    _da_count.config(text=slots_to_time(da_count))
-    _unfill_count.config(text=slots_to_time(unfill_count))
+    _study_count.config(text=slots_to_time(study_count)+f"  ({round((study_count*100/total),2)}%)")
+    _waste_count.config(text=slots_to_time(waste_count)+f"  ({round((waste_count*100/total),2)}%)")
+    _class_count.config(text=slots_to_time(class_count)+f"  ({round((class_count*100/total),2)}%)")
+    _da_count.config(text=slots_to_time(da_count)+f"  ({round((da_count*100/total),2)}%)")
+    _unfill_count.config(text=slots_to_time(unfill_count)+f"  ({round((unfill_count*100/total),2)}%)")
 refresh_analytics()
 
 refresh = Button(analytics_frame, text="Refesh", command=refresh_analytics)
