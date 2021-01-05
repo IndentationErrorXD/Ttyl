@@ -9,7 +9,7 @@ import os
 
 fill_mode = False
 fill_color = 'red'
-colors = ['white', 'red', 'blue', 'green', 'yellow', 'white']
+colors = ['white', 'red', 'orange', 'blue', 'green', 'yellow','white']
 date = date.today()
 unsaved_changes=False
 
@@ -24,7 +24,7 @@ root.title("Time Matrix")
 
 blank_image = PhotoImage()
 
-grid_frame = LabelFrame(root, padx=10, pady=10)
+grid_frame = LabelFrame(root, padx=10, pady=50)
 grid_frame.grid(row=0, column=0, columnspan=25, rowspan=6)
 
 #Defining the Button function(s)
@@ -248,7 +248,7 @@ def _save_(): #Saves all the color values in the list activity_data
 save = Button(grid_frame, text='Save', width=7, command=_save_)
 save.grid(row=5, column=22, columnspan=3)
 
-color_info = Label(grid_frame, font=tkfont.Font(size=7),text="🛈 Green: Studied, Red: Wasted, Blue: Class, Yellow: Daily Activities, White: Unfilled")
+color_info = Label(grid_frame, font=tkfont.Font(size=7),text="🛈 Green: Studied, Red: Wasted, Blue: Class, Yellow: Daily Activities, Orange: Sleep")
 color_info.grid(row=6, column=7, columnspan=18, sticky='ES')
 
 
@@ -316,7 +316,7 @@ Analytics
 '''
 
 analytics_frame = LabelFrame(root, text='Analytics', padx=10, pady=10)
-analytics_frame.grid(row=0, column=26)
+analytics_frame.grid(row=1, column=26, columnspan=2, rowspan=10)
 
 from_lbl = Label(analytics_frame, text='From:')
 to_lbl = Label(analytics_frame, text='To:')
@@ -325,6 +325,7 @@ study = Label(analytics_frame, text="Studied:")
 waste = Label(analytics_frame, text="Relaxing:")
 _class= Label(analytics_frame, text="Class Hours:")
 d_activities= Label(analytics_frame, text="Daily activities:")
+sleep = Label(analytics_frame, text='Sleep:')
 unfill = Label(analytics_frame, text="Unfilled:")
 
 n=3
@@ -336,7 +337,8 @@ study.grid(row=n+1,column=0, sticky=align)
 waste.grid(row=n+2,column=0, sticky=align)
 _class.grid(row=n+3,column=0, sticky=align)
 d_activities.grid(row=n+4,column=0, sticky=align)
-unfill.grid(row=n+5, column=0, sticky=align)
+sleep.grid(row=n+5, column=0, sticky=align)
+unfill.grid(row=n+6, column=0, sticky=align)
 #--------------------------------------------------------------
 
 start_date = date-timedelta(7)
@@ -347,6 +349,7 @@ _study_count = Label(analytics_frame, text='00hrs 00mins')
 _waste_count = Label(analytics_frame, text='00hrs 00mins')
 _class_count= Label(analytics_frame, text='00hrs 00mins')
 _da_count= Label(analytics_frame, text='00hrs 00mins')
+_sleep_count = Label(analytics_frame, text='00hrs 00mins')
 _unfill_count = Label(analytics_frame, text='00hrs 00mins')
 
 n=3
@@ -355,14 +358,15 @@ _study_count.grid(row=n+1, column=1)
 _waste_count.grid(row=n+2, column=1)
 _class_count.grid(row=n+3, column=1)
 _da_count.grid(row=n+4, column=1)
-_unfill_count.grid(row=n+5, column=1)
+_sleep_count.grid(row=n+5, column=1)
+_unfill_count.grid(row=n+6, column=1)
 
 def refresh_analytics():
     global start_date
     global end_date
     range_in_focus = []
 
-    study_count, waste_count, class_count, da_count, unfill_count, total = 0,0,0,0,0,0
+    study_count, waste_count, class_count, da_count, unfill_count, sleep_count, total = 0,0,0,0,0,0,0
 
     rows = fh.getrows()
     for row in rows:
@@ -383,6 +387,8 @@ def refresh_analytics():
                 class_count+=1
             elif x=='yellow':
                 da_count+=1
+            elif x=='orange':
+                sleep_count+=1    
             elif x=='white':
                 unfill_count+=1
 
@@ -396,11 +402,12 @@ def refresh_analytics():
     _waste_count.config(text=slots_to_time(waste_count)+f"  ({round((waste_count*100/total),2) if total!=0 else 0}%)")
     _class_count.config(text=slots_to_time(class_count)+f"  ({round((class_count*100/total),2) if total!=0 else 0}%)")
     _da_count.config(text=slots_to_time(da_count)+f"  ({round((da_count*100/total),2) if total!=0 else 0}%)")
+    _sleep_count.config(text=slots_to_time(sleep_count)+f"  ({round((sleep_count*100/total),2) if total!=0 else 0}%)")
     _unfill_count.config(text=slots_to_time(unfill_count)+f"  ({round((unfill_count*100/total),2) if total!=0 else 0}%)")
 refresh_analytics()
 
 refresh = Button(analytics_frame, text="Refesh", command=refresh_analytics)
-refresh.grid(row=9, column=1, sticky='ES', columnspan=2)
+refresh.grid(row=10, column=1, sticky='ES', columnspan=2)
 
 #Calendars
 
