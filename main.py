@@ -24,7 +24,7 @@ root.title("Time Matrix")
 
 blank_image = PhotoImage()
 
-grid_frame = LabelFrame(root, padx=10, pady=50)
+grid_frame = LabelFrame(root, padx=10, pady=10)
 grid_frame.grid(row=0, column=0, columnspan=25, rowspan=6)
 
 #Defining the Button function(s)
@@ -122,15 +122,31 @@ def refresh_grid():
 #Defining and inserting Grid Labels
 
 #HR-labels
-for i in range(24):
-	hour = f"0{i}:00" if i<10 else f"{i}:00"
+
+for i in range(12):
+	l = [12]+list(range(1,12))
+	e=l[i]
+	hour = f"0{e}:00  AM" if e<10 else f"{e}:00  AM"
 
 	sub_frame = LabelFrame(grid_frame)
 	sub_frame.grid(row = 0, column = i+1)
 
-	canvas_1_manage = Canvas(sub_frame, width = 10, height = 35)
+	canvas_1_manage = Canvas(sub_frame, width = 10, height = 60)
 	canvas_1_manage.pack()
-	canvas_1_manage.create_text(6, 35, text = hour, angle = 90, anchor = "w")
+	canvas_1_manage.create_text(6, 60, text = hour, angle = 90, anchor = "w")
+
+for i in range(12):
+	l = [12]+list(range(1,12))
+	e=l[i]
+	hour = f"0{e}:00  PM" if e<10 else f"{e}:00  PM"
+
+	sub_frame = LabelFrame(grid_frame)
+	sub_frame.grid(row = 0, column = 12+i+1)
+
+	canvas_1_manage = Canvas(sub_frame, width = 10, height = 60)
+	canvas_1_manage.pack()
+	canvas_1_manage.create_text(6, 60, text = hour, angle = 90, anchor = "w")
+
 #MIN-labels
 for i in range(4):
 	mins_frame = LabelFrame(grid_frame, height=20, width=40)
