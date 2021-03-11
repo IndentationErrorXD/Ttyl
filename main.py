@@ -422,7 +422,7 @@ def refresh_analytics():
     _unfill_count.config(text=slots_to_time(unfill_count)+f"  ({round((unfill_count*100/total),2) if total!=0 else 0}%)")
 refresh_analytics()
 
-refresh = Button(analytics_frame, text="Refesh", command=refresh_analytics)
+refresh = Button(analytics_frame, text="Refresh", command=refresh_analytics)
 refresh.grid(row=10, column=1, sticky='ES', columnspan=2)
 
 #Calendars
