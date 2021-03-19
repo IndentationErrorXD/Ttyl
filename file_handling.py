@@ -16,7 +16,7 @@ filename = "data.csv"
 def initialize():
         with open(filename, 'w', newline = '\n') as csvfile:
                 csvwriter = csv.writer(csvfile)  # creating a csv writer object		
-                #csvwriter.writerow(fields)
+                csvwriter.writerow(fields)
                 print('New file "data.csv" created!')
 
 def csv_append(lst):
