@@ -3,6 +3,7 @@ from tkinter import messagebox
 import tkinter.font as tkfont
 from tkcalendar import DateEntry
 from datetime import date, datetime, timedelta
+import matplotlib.pyplot as plt
 import file_handling as fh
 import help_functions as hp
 import os
@@ -260,15 +261,12 @@ def _save_(): #Saves all the color values in the list activity_data
             fh.csv_append(flatlist)		
     unsaved_changes=False   
 
-#code
+#code)
+
 save = Button(grid_frame, text='Save', width=7, command=_save_)
 save.grid(row=5, column=22, columnspan=3)
-
 color_info = Label(grid_frame, font=tkfont.Font(size=7),text="🛈 Green: Studied, Red: Wasted, Blue: Class, Yellow: Daily Activities, Orange: Sleep")
 color_info.grid(row=6, column=7, columnspan=18, sticky='ES')
-
-
-
 
 
 '''
@@ -421,7 +419,7 @@ def refresh_analytics():
     _sleep_count.config(text=slots_to_time(sleep_count)+f"  ({round((sleep_count*100/total),2) if total!=0 else 0}%)")
     _unfill_count.config(text=slots_to_time(unfill_count)+f"  ({round((unfill_count*100/total),2) if total!=0 else 0}%)")
 
-    return [study_count, waste_count, class_count, da_count, unfill_count, sleep_count, total]
+    return [study_count, waste_count, class_count, da_count, unfill_count, sleep_count]
 
 refresh_analytics()
 
@@ -471,5 +469,18 @@ to_cal = DateEntry(analytics_frame, width=10, background='darkblue', foreground=
 to_cal.grid(row=2, column=1)
 to_cal.set_date(end_date)
 to_cal.bind('<<DateEntrySelected>>', to_cal_changed)
+
+#GRAPHS
+
+def generate_graphs():
+    counts = refresh_analytics()
+    labels = ['Studies', 'Relaxed', 'Class', 'Daily Activities', 'Unfilled', "Sleep" ]
+    #[study_count, waste_count, class_count, da_count, unfill_count, sleep_count, total]
+    fig = plt.figure(figsize =(10, 7)) 
+    plt.pie(counts, labels = labels) 
+    plt.show()
+
+gen_graph_button = Button(analytics_frame, text="Show Graphs", command=generate_graphs)
+gen_graph_button.grid(row=10, column=0, sticky='SW', columnspan=2)
 
 root.mainloop()
