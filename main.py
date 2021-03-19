@@ -22,6 +22,7 @@ if os.path.exists('data.csv') == False:
 
 root = Tk()
 root.title("Time Matrix")
+root.geometry('+250+0')
 
 blank_image = PhotoImage()
 
@@ -492,14 +493,14 @@ def generate_graphs():
     c_and_l = zip(labels, colors)
     #[study_count, waste_count, class_count, da_count, unfill_count, sleep_count, total]
     if total>96:
-        fig, (axs0, axs1) = plt.subplots(1, 2, figsize =(12, 7)) 
+        fig, (axs0, axs1) = plt.subplots(1, 2, figsize =(8, 6)) 
     else:
-        fig, axs0 = plt.subplots(figsize =(17, 7))    
+        fig, axs0 = plt.subplots(figsize =(10, 5))    
     axs0.pie(counts, 
-        labels = labels,
+        #labels = labels,
         colors=colors,
         autopct=lambda p: f'{round(p,2)}%') 
-    #axs0.legend(loc ="lower right") 
+    axs0.legend(loc ="lower right") 
     if total>96:
         dates = [counts[0] for counts in daywise_counts]
         Studies = [15*counts[1] for counts in daywise_counts]
