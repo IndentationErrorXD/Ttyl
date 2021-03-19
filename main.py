@@ -420,6 +420,9 @@ def refresh_analytics():
     _da_count.config(text=slots_to_time(da_count)+f"  ({round((da_count*100/total),2) if total!=0 else 0}%)")
     _sleep_count.config(text=slots_to_time(sleep_count)+f"  ({round((sleep_count*100/total),2) if total!=0 else 0}%)")
     _unfill_count.config(text=slots_to_time(unfill_count)+f"  ({round((unfill_count*100/total),2) if total!=0 else 0}%)")
+
+    return [study_count, waste_count, class_count, da_count, unfill_count, sleep_count, total]
+
 refresh_analytics()
 
 refresh = Button(analytics_frame, text="Refresh", command=refresh_analytics)
