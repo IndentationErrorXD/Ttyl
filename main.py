@@ -292,7 +292,7 @@ def when_date_changed(e):
                 unsaved_changes=False
              
         date = _date
-        print(date)
+        #print(date)
 
         deletegrid()
         button_list=[]
@@ -381,6 +381,7 @@ def refresh_analytics():
     range_in_focus = []
 
     study_count, waste_count, class_count, da_count, unfill_count, sleep_count, total = 0,0,0,0,0,0,0
+    daywise_counts=[]
 
     rows = fh.getrows()
     for row in rows:
@@ -389,28 +390,37 @@ def refresh_analytics():
             range_in_focus.append(row)
 
     days_filled=len(range_in_focus)
-    
-    for rows in range_in_focus:
-        for x in rows:
+
+    for i, row in enumerate(range_in_focus):
+        s,w,c,d,sl,u = 0,0,0,0,0,0
+        daywise_counts.append([row[0]]) #row[0] is date
+        for x in row[1:]:        #excluding first element since it is date
             total+=1
             if x=='green':
                 study_count+=1
+                s+=1
             elif x=='red':
                 waste_count+=1
+                w+=1
             elif x=='blue':
                 class_count+=1
+                c+=1
             elif x=='yellow':
                 da_count+=1
+                d+=1
             elif x=='orange':
                 sleep_count+=1    
+                sl+=1
             elif x=='white':
                 unfill_count+=1
+                u+=1
+        daywise_counts[i]+=[s,w,c,d,sl,u]
 
     def slots_to_time(num):
         hrs = num*15//60
         mins = (num*15)%60
         return f"{hrs}hrs {mins}mins"
-    
+
     _days_count.config(text=days_filled)
     _study_count.config(text=slots_to_time(study_count)+f"  ({round((study_count*100/total),2) if total!=0 else 0}%)")
     _waste_count.config(text=slots_to_time(waste_count)+f"  ({round((waste_count*100/total),2) if total!=0 else 0}%)")
@@ -419,7 +429,7 @@ def refresh_analytics():
     _sleep_count.config(text=slots_to_time(sleep_count)+f"  ({round((sleep_count*100/total),2) if total!=0 else 0}%)")
     _unfill_count.config(text=slots_to_time(unfill_count)+f"  ({round((unfill_count*100/total),2) if total!=0 else 0}%)")
 
-    return [study_count, waste_count, class_count, da_count, unfill_count, sleep_count]
+    return {'total':total, 'daywise_counts': daywise_counts, 'counts':[study_count, waste_count, class_count, da_count, sleep_count, unfill_count]}
 
 refresh_analytics()
 
@@ -473,11 +483,30 @@ to_cal.bind('<<DateEntrySelected>>', to_cal_changed)
 #GRAPHS
 
 def generate_graphs():
-    counts = refresh_analytics()
-    labels = ['Studies', 'Relaxed', 'Class', 'Daily Activities', 'Unfilled', "Sleep" ]
+    data = refresh_analytics()
+    counts = data['counts']
+    total = data['total']
+    daywise_counts = data['daywise_counts']
+    labels = ['Studies', 'Relaxed', 'Class', 'Daily Activities', 'Sleep', 'Unfilled']
+    colors = ['green', 'red', 'blue', 'yellow', 'orange', 'grey']
+    c_and_l = zip(labels, colors)
     #[study_count, waste_count, class_count, da_count, unfill_count, sleep_count, total]
-    fig = plt.figure(figsize =(10, 7)) 
-    plt.pie(counts, labels = labels) 
+    if total>96:
+        fig, (axs0, axs1) = plt.subplots(1, 2, figsize =(12, 7)) 
+    else:
+        fig, axs0 = plt.subplots(figsize =(17, 7))    
+    axs0.pie(counts, 
+        labels = labels,
+        colors=colors,
+        autopct=lambda p: f'{round(p,2)}%') 
+    #axs0.legend(loc ="lower right") 
+    if total>96:
+        dates = [counts[0] for counts in daywise_counts]
+        Studies = [15*counts[1] for counts in daywise_counts]
+        Relaxed = [15*counts[2] for counts in daywise_counts]
+
+        axs1.plot(dates, Studies)
+
     plt.show()
 
 gen_graph_button = Button(analytics_frame, text="Show Graphs", command=generate_graphs)
