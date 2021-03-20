@@ -1,5 +1,6 @@
 from PIL import Image, ImageFont, ImageDraw 
 import numpy as np
+import img2pdf
 import os
 
 def make_images(range_in_focus):
@@ -43,25 +44,30 @@ def rel_path(x):
 		return abs_file_path
 
 def concat_images(range_in_focus):
+	im_pages=[]
+	images = [Image.open(rel_path(x[0]+'.png')) for x in range_in_focus]
+	for i in range(0, len(images), 7):
+		head = Image.open("head.png")
 
-	images = [Image.open('head.png')]+[Image.open(rel_path(x[0]+'.png')) for x in range_in_focus]
-	widths, heights = zip(*(i.size for i in images))
+		batch = [head] + images[i:i+7]
+		widths, heights = zip(*(i.size for i in batch))
 
-	max_width = max(widths)
-	total_height = sum(heights)
+		max_width = max(widths)
+		total_height = sum(heights)
 
-	new_im = Image.new('RGB', (max_width, total_height))
+		new_im = Image.new('RGB', (max_width, total_height))
 
-	y_offset = 0
-	for im in images:
-	  new_im.paste(im, (0, y_offset))
-	  y_offset += im.size[1]
+		y_offset = 0
+		for im in batch:
+		  new_im.paste(im, (0, y_offset))
+		  y_offset += im.size[1]
 
-	new_im.save('result.png')
-	new_im.save('result.pdf', "PDF", resolution=100.0, save_all=True)
-
-
-
+		im_pages.append(new_im)
+	for x in im_pages:
+		print(x)
+	im_pages[0].save('result.pdf', "PDF", save_all=True)
+	for im in im_pages[1:]:
+		im.save('result.pdf', "PDF", save_all=True, append=True)
 
 '''
 for y in range(84,106):

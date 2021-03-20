@@ -475,13 +475,14 @@ def pdf_print():
     path = filedialog.asksaveasfilename(defaultextension='.pdf', filetypes=[("PDF file", '*.pdf')], title="Choose filename")
     range_rows = fh.get_range(start_date, end_date)
     range_rows.sort()
+    for row in range_rows:
+        print(row[0])
 
     os.mkdir("pdf-pics-temp")
     im_manip.make_images(range_rows)
     im_manip.concat_images(range_rows)
     shutil.rmtree(im_manip.rel_path(''))
-
-    
+   
 grp_button = Button(analytics_frame, text='Show Graphs', command=pdf_print)
 grp_button.grid(row=10, column=0, sticky='SW')
 pdf_button = Button(root, text='Download PDF', command=pdf_print)
