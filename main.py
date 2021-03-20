@@ -523,6 +523,10 @@ def generate_graphs():
         axs1.plot(dates, Relaxed, color='red', marker='o', label='Relaxed')
         axs1.legend()
 
+        #plt.minorticks_on() #to enable minor tickmarcks
+        #for i,j in zip(dates, Relaxed):
+        #   axs1.annotate(f'{int(15*j//60)}:{int(15*j%60)}',xy=(i,j+0.5))
+
         plt.xlabel("Days")
         plt.ylabel("Hours")
 
@@ -534,7 +538,7 @@ def generate_graphs():
         axs1.xaxis.set_major_formatter(yformatter)
 
         #plt.xticks(rotation=-90)
-        axs1.grid(True)
+        axs1.grid(True)   #add which='both'to enable minor gridlines
     plt.show()
 
 gen_graph_button = Button(analytics_frame, text="Show Graphs", command=generate_graphs)
