@@ -522,8 +522,8 @@ def generate_graphs():
         Sleep = [counts[5] for counts in daywise_counts]
 
         #axs1.plot(dates, Daily_Activities, color='yellow', marker='o', label='Daily Activities')
-        #axs1.plot(dates, Class, color='blue', marker='o', label='Class')
-        axs1.plot(dates, Sleep, color='orange', marker='o', label='Sleep')
+        axs1.plot(dates, Class, color='blue', marker='o', label='Class')
+        #axs1.plot(dates, Sleep, color='orange', marker='o', label='Sleep')
         axs1.plot(dates, Studies, color='green', marker='o', label='Studies')
         axs1.plot(dates, Relaxed, color='red', marker='o', label='Relaxed')
         axs1.legend()
