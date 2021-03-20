@@ -393,7 +393,7 @@ def refresh_analytics():
     days_filled=len(range_in_focus)
     
     for rows in range_in_focus:
-        for x in rows:
+        for x in rows[1:]: #excluding first element since it is date
             total+=1
             if x=='green':
                 study_count+=1
