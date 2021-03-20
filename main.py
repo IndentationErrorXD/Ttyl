@@ -1,8 +1,8 @@
 from tkinter import *
-from tkinter import messagebox, filedialog
+from tkinter import messagebox
 import tkinter.font as tkfont
 from tkcalendar import DateEntry
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 import file_handling as fh
 import help_functions as hp
 import os
@@ -377,14 +377,18 @@ _da_count.grid(row=n+4, column=1)
 _sleep_count.grid(row=n+5, column=1)
 _unfill_count.grid(row=n+6, column=1)
 
-
-
 def refresh_analytics():
     global start_date
     global end_date
-    range_in_focus = fh.get_range(start_date, end_date)
+    range_in_focus = []
 
     study_count, waste_count, class_count, da_count, unfill_count, sleep_count, total = 0,0,0,0,0,0,0
+
+    rows = fh.getrows()
+    for row in rows:
+        date = datetime.strptime(row[0], '%Y-%m-%d').date()
+        if start_date<=date<=end_date:
+            range_in_focus.append(row)
 
     days_filled=len(range_in_focus)
     
@@ -465,24 +469,4 @@ to_cal.grid(row=2, column=1)
 to_cal.set_date(end_date)
 to_cal.bind('<<DateEntrySelected>>', to_cal_changed)
 
-<<<<<<< Updated upstream
-=======
-'''
-PDF-Print
-'''
-def pdf_print():
-    global start_date
-    global end_date
-
-    path = filedialog.asksaveasfilename(defaultextension='.pdf', filetypes=[("PDF file", '*.pdf')], title="Choose filename")
-    range_rows = fh.get_range(start_date, end_date)
-    range_rows.sort()
-    #print([x[0] for x in range_rows])
-
-    
-
-pdf_button = Button(analytics_frame, text='Download PDF', command=pdf_print)
-pdf_button.grid(row=10, column=0, sticky='SW')
-
->>>>>>> Stashed changes
 root.mainloop()
