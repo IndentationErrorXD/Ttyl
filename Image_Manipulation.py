@@ -4,7 +4,14 @@ import img2pdf
 import os
 
 def make_images(range_in_focus):
+
 	for row in range_in_focus:
+
+		date = row[0]
+		ds = date.split('-')
+		print(date, ds)
+		date=f"{ds[2]}/{ds[1]}/{ds[0][-2:]}"
+
 		#190x920px
 		img = Image.open('mid-template.png')
 
@@ -35,6 +42,7 @@ def make_images(range_in_focus):
 				for x in range(x_start, x_start+x_diff):
 					img.putpixel( (x,y), colors_dict[color])
 		
+		add_mid_text(img, date)
 		img.save(rel_path(row[0]+'.png'))			
 
 def rel_path(x):
@@ -43,13 +51,27 @@ def rel_path(x):
 		abs_file_path = os.path.join(script_dir, rel_path)
 		return abs_file_path
 
-def concat_images(range_in_focus):
+def make_pdf(path, range_in_focus):
 	im_pages=[]
 	images = [Image.open(rel_path(x[0]+'.png')) for x in range_in_focus]
-	for i in range(0, len(images), 7):
+	batchsize=7
+	b=batchsize
+	for i in range(0, len(images), b):
 		head = Image.open("head.png")
+		batch = [head] + images[i:i+b]
 
-		batch = [head] + images[i:i+7]
+		_batch = range_in_focus[i:i+b]
+
+		start_date=_batch[0][0]
+		sds=start_date.split('-')
+		start_date=f"{sds[2]}/{sds[1]}/{sds[0][-2:]}"
+
+		end_date=_batch[-1][0]
+		eds=end_date.split('-')
+		end_date=f"{eds[2]}/{eds[1]}/{eds[0][-2:]}"
+
+		add_head_text(head, start_date, end_date)
+
 		widths, heights = zip(*(i.size for i in batch))
 
 		max_width = max(widths)
@@ -65,9 +87,24 @@ def concat_images(range_in_focus):
 		im_pages.append(new_im)
 	for x in im_pages:
 		print(x)
-	im_pages[0].save('result.pdf', "PDF", save_all=True)
+	im_pages[0].save(path, "PDF", save_all=True)
 	for im in im_pages[1:]:
-		im.save('result.pdf', "PDF", save_all=True, append=True)
+		im.save(path, "PDF", save_all=True, append=True)
+
+def add_head_text(img, start_date, end_date):
+	title_font = ImageFont.truetype('Roboto-Regular.ttf', 18)
+	title_text = f"From: {start_date}\n\nTo: {end_date}"
+
+	image_editable = ImageDraw.Draw(img)
+	image_editable.text((15,10), title_text, (0, 0, 0), font=title_font)
+	#img.show()
+
+def add_mid_text(img, date):
+	title_font = ImageFont.truetype('Roboto-Regular.ttf', 30)
+	title_text = date
+
+	image_editable = ImageDraw.Draw(img)
+	image_editable.text((25,35), title_text, (0, 0, 0), font=title_font)
 
 '''
 for y in range(84,106):
