@@ -3,6 +3,7 @@ from tkinter import messagebox
 import tkinter.font as tkfont
 from tkcalendar import DateEntry
 from datetime import date, datetime, timedelta
+import matplotlib
 import matplotlib.pyplot as plt
 import file_handling as fh
 import help_functions as hp
@@ -417,6 +418,8 @@ def refresh_analytics():
                 u+=1
         daywise_counts[i]+=[s,w,c,d,sl,u]
 
+    daywise_counts.sort()
+
     def slots_to_time(num):
         hrs = num*15//60
         mins = (num*15)%60
@@ -493,21 +496,40 @@ def generate_graphs():
     c_and_l = zip(labels, colors)
     #[study_count, waste_count, class_count, da_count, unfill_count, sleep_count, total]
     if total>96:
-        fig, (axs0, axs1) = plt.subplots(1, 2, figsize =(8, 6)) 
+        fig, (axs0, axs1) = plt.subplots(1, 2, figsize =(12, 6)) 
+        plt.tight_layout()
+        plt.gcf().subplots_adjust(bottom=0.15)
     else:
         fig, axs0 = plt.subplots(figsize =(10, 5))    
     axs0.pie(counts, 
-        #labels = labels,
+        labels = labels,
         colors=colors,
         autopct=lambda p: f'{round(p,2)}%') 
-    axs0.legend(loc ="lower right") 
+    #axs0.legend(loc ="lower right") 
     if total>96:
         dates = [counts[0] for counts in daywise_counts]
-        Studies = [15*counts[1] for counts in daywise_counts]
-        Relaxed = [15*counts[2] for counts in daywise_counts]
+        Studies = [counts[1] for counts in daywise_counts]
+        Relaxed = [counts[2] for counts in daywise_counts]
+        Class = [counts[3] for counts in daywise_counts]
+        Daily_Activities = [counts[4] for counts in daywise_counts]
+        Sleep = [counts[5] for counts in daywise_counts]
 
-        axs1.plot(dates, Studies)
+        #axs1.plot(dates, Daily_Activities, color='yellow', marker='o', label='Daily Activities')
+        #axs1.plot(dates, Class, color='blue', marker='o', label='Class')
+        axs1.plot(dates, Sleep, color='orange', marker='o', label='Sleep')
+        axs1.plot(dates, Studies, color='green', marker='o', label='Studies')
+        axs1.plot(dates, Relaxed, color='red', marker='o', label='Relaxed')
+        axs1.legend()
 
+        plt.xlabel("Days")
+        plt.ylabel("Hours")
+
+        yformatter = matplotlib.ticker.FuncFormatter(lambda mins, pos: f'{int(15*mins//60)}:{int(15*mins%60)}')
+        axs1.yaxis.set_major_formatter(yformatter)
+
+        #xformatter = matplotlib.ticker.FuncFormatter(lambda date, pos: str(date)+':'+str(pos))
+        #axs1.xaxis.set_major_formatter(xformatter)
+        axs1.grid(True)
     plt.show()
 
 gen_graph_button = Button(analytics_frame, text="Show Graphs", command=generate_graphs)
