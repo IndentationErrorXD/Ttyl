@@ -544,7 +544,7 @@ def generate_graphs():
 
         #plt.xticks(rotation=-90)
         axs1.grid(True)   #add which='both'to enable minor gridlines
-    plt.show()
+    plt.show() 
 
 gen_graph_button = Button(analytics_frame, text="Show Graphs", command=generate_graphs)
 gen_graph_button.grid(row=10, column=0, sticky='SW', columnspan=2)
