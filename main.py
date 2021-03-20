@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 import tkinter.font as tkfont
 from tkcalendar import DateEntry
 from datetime import date, datetime, timedelta
@@ -380,15 +380,9 @@ _unfill_count.grid(row=n+6, column=1)
 def refresh_analytics():
     global start_date
     global end_date
-    range_in_focus = []
+    range_in_focus = fh.get_range(start_date, end_date)
 
     study_count, waste_count, class_count, da_count, unfill_count, sleep_count, total = 0,0,0,0,0,0,0
-
-    rows = fh.getrows()
-    for row in rows:
-        date = datetime.strptime(row[0], '%Y-%m-%d').date()
-        if start_date<=date<=end_date:
-            range_in_focus.append(row)
 
     days_filled=len(range_in_focus)
     
@@ -478,11 +472,12 @@ def pdf_print():
 
     path = filedialog.asksaveasfilename(defaultextension='.pdf', filetypes=[("PDF file", '*.pdf')], title="Choose filename")
     range_rows = fh.get_range(start_date, end_date)
-    range_rows.sort()
+    
     #print([x[0] for x in range_rows])
     
-pdf_button = Button(analytics_frame, text='Download PDF', command=pdf_print)
-pdf_button.grid(row=10, column=0, sticky='SW')
-
+grp_button = Button(analytics_frame, text='Show Graphs', command=pdf_print)
+grp_button.grid(row=10, column=0, sticky='SW')
+pdf_button = Button(root, text='Download PDF', command=pdf_print)
+pdf_button.grid(row=7, column=24, sticky='n')
 
 root.mainloop()

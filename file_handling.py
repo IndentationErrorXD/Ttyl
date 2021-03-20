@@ -1,5 +1,6 @@
 import csv
 import os
+from datetime import date, datetime, timedelta
 
 fields = ['Date']
 for i in range(24):
@@ -58,3 +59,12 @@ def replace_row(date, row_list):
         os.rename('data_temp.csv', 'data.csv')	
         print('1 row replaced')	
 
+def get_range(start_date, end_date):
+        range_in_focus = []
+
+        rows = getrows()
+        for row in rows:
+                date = datetime.strptime(row[0], '%Y-%m-%d').date()
+                if start_date<=date<=end_date:
+                        range_in_focus.append(row)
+        return range_in_focus                
