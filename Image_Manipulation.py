@@ -13,7 +13,7 @@ def make_images(range_in_focus):
 		date=f"{ds[2]}/{ds[1]}/{ds[0][-2:]}"
 
 		#190x920px
-		img = Image.open('mid-template.png')
+		img = Image.open(rel_path('assets/mid-template.png'))
 
 		#width, height = img.size
 		#print(height, width)
@@ -43,21 +43,20 @@ def make_images(range_in_focus):
 					img.putpixel( (x,y), colors_dict[color])
 		
 		add_mid_text(img, date)
-		img.save(rel_path(row[0]+'.png'))			
+		img.save(rel_path('pdf-pics-temp/'+row[0]+'.png'))			
 
 def rel_path(x):
 		script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
-		rel_path = f"pdf-pics-temp/{x}"
-		abs_file_path = os.path.join(script_dir, rel_path)
+		abs_file_path = os.path.join(script_dir, x)
 		return abs_file_path
 
 def make_pdf(path, range_in_focus):
 	im_pages=[]
-	images = [Image.open(rel_path(x[0]+'.png')) for x in range_in_focus]
+	images = [Image.open(rel_path('pdf-pics-temp/'+x[0]+'.png')) for x in range_in_focus]
 	batchsize=7
 	b=batchsize
 	for i in range(0, len(images), b):
-		head = Image.open("head.png")
+		head = Image.open(rel_path("assets/head.png"))
 		batch = [head] + images[i:i+b]
 
 		_batch = range_in_focus[i:i+b]
@@ -92,7 +91,7 @@ def make_pdf(path, range_in_focus):
 		im.save(path, "PDF", save_all=True, append=True)
 
 def add_head_text(img, start_date, end_date):
-	title_font = ImageFont.truetype('Roboto-Regular.ttf', 18)
+	title_font = ImageFont.truetype(rel_path('assets/Roboto-Regular.ttf'), 18)
 	title_text = f"From: {start_date}\n\nTo: {end_date}"
 
 	image_editable = ImageDraw.Draw(img)
@@ -100,11 +99,11 @@ def add_head_text(img, start_date, end_date):
 	#img.show()
 
 def add_mid_text(img, date):
-	title_font = ImageFont.truetype('Roboto-Regular.ttf', 30)
+	title_font = ImageFont.truetype(rel_path('assets/Roboto-Regular.ttf'), 25)
 	title_text = date
 
 	image_editable = ImageDraw.Draw(img)
-	image_editable.text((25,35), title_text, (0, 0, 0), font=title_font)
+	image_editable.text((35,35), title_text, (0, 0, 0), font=title_font)
 
 '''
 for y in range(84,106):

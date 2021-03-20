@@ -480,7 +480,7 @@ def pdf_print():
         os.mkdir("pdf-pics-temp")
         im_manip.make_images(range_rows)
         im_manip.make_pdf(path, range_rows)
-        shutil.rmtree(im_manip.rel_path(''))
+        shutil.rmtree(im_manip.rel_path('pdf-pics-temp'))
    
 pdf_button = Button(root, text='Download PDF', command=pdf_print)
 pdf_button.grid(row=7, column=24, sticky='n')
