@@ -469,4 +469,20 @@ to_cal.grid(row=2, column=1)
 to_cal.set_date(end_date)
 to_cal.bind('<<DateEntrySelected>>', to_cal_changed)
 
+'''
+PDF-print
+'''
+def pdf_print():
+    global start_date
+    global end_date
+
+    path = filedialog.asksaveasfilename(defaultextension='.pdf', filetypes=[("PDF file", '*.pdf')], title="Choose filename")
+    range_rows = fh.get_range(start_date, end_date)
+    range_rows.sort()
+    #print([x[0] for x in range_rows])
+    
+pdf_button = Button(analytics_frame, text='Download PDF', command=pdf_print)
+pdf_button.grid(row=10, column=0, sticky='SW')
+
+
 root.mainloop()
