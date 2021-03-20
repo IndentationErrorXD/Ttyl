@@ -9,7 +9,6 @@ def make_images(range_in_focus):
 
 		date = row[0]
 		ds = date.split('-')
-		print(date, ds)
 		date=f"{ds[2]}/{ds[1]}/{ds[0][-2:]}"
 
 		#190x920px
@@ -84,8 +83,7 @@ def make_pdf(path, range_in_focus):
 		  y_offset += im.size[1]
 
 		im_pages.append(new_im)
-	for x in im_pages:
-		print(x)
+
 	im_pages[0].save(path, "PDF", save_all=True)
 	for im in im_pages[1:]:
 		im.save(path, "PDF", save_all=True, append=True)
