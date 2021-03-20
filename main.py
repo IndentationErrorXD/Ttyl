@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 import tkinter.font as tkfont
 from tkcalendar import DateEntry
 from datetime import date, datetime, timedelta
@@ -9,7 +9,9 @@ import matplotlib.dates as mdates
 from matplotlib.dates import DateFormatter
 import file_handling as fh
 import help_functions as hp
+import Image_Manipulation as im_manip
 import os
+import shutil
 
 fill_mode = False
 fill_color = 'red'
@@ -382,16 +384,10 @@ _unfill_count.grid(row=n+6, column=1)
 def refresh_analytics():
     global start_date
     global end_date
-    range_in_focus = []
+    range_in_focus = fh.get_range(start_date, end_date)
 
     study_count, waste_count, class_count, da_count, unfill_count, sleep_count, total = 0,0,0,0,0,0,0
     daywise_counts=[]
-
-    rows = fh.getrows()
-    for row in rows:
-        date = datetime.strptime(row[0], '%Y-%m-%d').date()
-        if start_date<=date<=end_date:
-            range_in_focus.append(row)
 
     days_filled=len(range_in_focus)
 
@@ -486,6 +482,7 @@ to_cal.grid(row=2, column=1)
 to_cal.set_date(end_date)
 to_cal.bind('<<DateEntrySelected>>', to_cal_changed)
 
+
 #GRAPHS
 
 def generate_graphs():
@@ -548,5 +545,25 @@ def generate_graphs():
 
 gen_graph_button = Button(analytics_frame, text="Show Graphs", command=generate_graphs)
 gen_graph_button.grid(row=10, column=0, sticky='SW', columnspan=2)
+
+'''
+PDF-print
+'''
+def pdf_print():
+    global start_date
+    global end_date
+
+    path = filedialog.asksaveasfilename(defaultextension='.pdf', filetypes=[("PDF file", '*.pdf')], title="Choose filename")
+    range_rows = fh.get_range(start_date, end_date)
+    range_rows.sort()
+
+    if path:
+        os.mkdir("pdf-pics-temp")
+        im_manip.make_images(range_rows)
+        im_manip.make_pdf(path, range_rows)
+        shutil.rmtree(im_manip.rel_path('pdf-pics-temp'))
+   
+pdf_button = Button(root, text='Download PDF', command=pdf_print)
+pdf_button.grid(row=7, column=24, sticky='n')
 
 root.mainloop()
