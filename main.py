@@ -5,7 +5,9 @@ from tkcalendar import DateEntry
 from datetime import date, datetime, timedelta
 import file_handling as fh
 import help_functions as hp
+import Image_Manipulation as im_manip
 import os
+import shutil
 
 fill_mode = False
 fill_color = 'red'
@@ -472,8 +474,13 @@ def pdf_print():
 
     path = filedialog.asksaveasfilename(defaultextension='.pdf', filetypes=[("PDF file", '*.pdf')], title="Choose filename")
     range_rows = fh.get_range(start_date, end_date)
-    
-    #print([x[0] for x in range_rows])
+    range_rows.sort()
+
+    os.mkdir("pdf-pics-temp")
+    im_manip.make_images(range_rows)
+    im_manip.concat_images(range_rows)
+    shutil.rmtree(im_manip.rel_path(''))
+
     
 grp_button = Button(analytics_frame, text='Show Graphs', command=pdf_print)
 grp_button.grid(row=10, column=0, sticky='SW')
