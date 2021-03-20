@@ -16,7 +16,7 @@ filename = "data.csv"
 def initialize():
         with open(filename, 'w', newline = '\n') as csvfile:
                 csvwriter = csv.writer(csvfile)  # creating a csv writer object		
-                #csvwriter.writerow(fields)
+                csvwriter.writerow(fields)
                 print('New file "data.csv" created!')
 
 def csv_append(lst):
@@ -31,7 +31,7 @@ def getrows():
                 csvreader = csv.reader(csvfile)  # creating a csv reader object	                                                                                                                       	
                 for x in csvreader:
                         rows.append(x)
-        return rows	
+        return rows[1:]	
 
 def csv_isExist(date):
 	with open(filename, 'r') as csvfile:
