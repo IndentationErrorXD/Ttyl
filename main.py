@@ -496,7 +496,12 @@ def generate_graphs():
     labels = ['Studies', 'Relaxed', 'Class', 'Daily Activities', 'Sleep', 'Unfilled']
     colors = ['green', 'red', 'blue', 'yellow', 'orange', 'grey']
     c_and_l = zip(labels, colors)
-    #[study_count, waste_count, class_count, da_count, unfill_count, sleep_count, total]
+
+    if counts[-1]==0:
+        counts.pop()
+        labels.pop()
+
+    #[study_count, waste_count, class_count, da_count, sleep_count, unfill_count]
     if total>96:
         fig, (axs0, axs1) = plt.subplots(1, 2, figsize =(13, 6)) 
         plt.tight_layout()
