@@ -526,7 +526,7 @@ def generate_graphs():
         plt.xlabel("Days")
         plt.ylabel("Hours")
 
-        yformatter = matplotlib.ticker.FuncFormatter(lambda mins, pos: f'{int(15*mins//60)}:{int(15*mins%60)}')
+        yformatter = matplotlib.ticker.FuncFormatter(lambda mins, pos: f'{int(15*mins//60)}:{int(15*mins%60)}') #if int(15*mins%60)!=0 else f'{int(15*mins//60)}:00' )
         axs1.yaxis.set_major_formatter(yformatter)
 
         date_format = DateFormatter('%d/%m')
