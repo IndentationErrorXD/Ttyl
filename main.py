@@ -496,7 +496,12 @@ def generate_graphs():
     labels = ['Studies', 'Relaxed', 'Class', 'Daily Activities', 'Sleep', 'Unfilled']
     colors = ['green', 'red', 'blue', 'yellow', 'orange', 'grey']
     c_and_l = zip(labels, colors)
-    #[study_count, waste_count, class_count, da_count, unfill_count, sleep_count, total]
+
+    if counts[-1]==0:
+        counts.pop()
+        labels.pop()
+
+    #[study_count, waste_count, class_count, da_count, sleep_count, unfill_count]
     if total>96:
         fig, (axs0, axs1) = plt.subplots(1, 2, figsize =(13, 6)) 
         plt.tight_layout()
@@ -517,8 +522,8 @@ def generate_graphs():
         Sleep = [counts[5] for counts in daywise_counts]
 
         #axs1.plot(dates, Daily_Activities, color='yellow', marker='o', label='Daily Activities')
-        #axs1.plot(dates, Class, color='blue', marker='o', label='Class')
-        axs1.plot(dates, Sleep, color='orange', marker='o', label='Sleep')
+        axs1.plot(dates, Class, color='blue', marker='o', label='Class')
+        #axs1.plot(dates, Sleep, color='orange', marker='o', label='Sleep')
         axs1.plot(dates, Studies, color='green', marker='o', label='Studies')
         axs1.plot(dates, Relaxed, color='red', marker='o', label='Relaxed')
         axs1.legend()
