@@ -5,6 +5,8 @@ from tkcalendar import DateEntry
 from datetime import date, datetime, timedelta
 import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+from matplotlib.dates import DateFormatter
 import file_handling as fh
 import help_functions as hp
 import os
@@ -395,7 +397,7 @@ def refresh_analytics():
 
     for i, row in enumerate(range_in_focus):
         s,w,c,d,sl,u = 0,0,0,0,0,0
-        daywise_counts.append([row[0]]) #row[0] is date
+        daywise_counts.append([datetime.strptime(row[0], '%Y-%m-%d').date()]) #row[0] is date
         for x in row[1:]:        #excluding first element since it is date
             total+=1
             if x=='green':
@@ -496,7 +498,7 @@ def generate_graphs():
     c_and_l = zip(labels, colors)
     #[study_count, waste_count, class_count, da_count, unfill_count, sleep_count, total]
     if total>96:
-        fig, (axs0, axs1) = plt.subplots(1, 2, figsize =(12, 6)) 
+        fig, (axs0, axs1) = plt.subplots(1, 2, figsize =(13, 6)) 
         plt.tight_layout()
         plt.gcf().subplots_adjust(bottom=0.15)
     else:
@@ -527,8 +529,11 @@ def generate_graphs():
         yformatter = matplotlib.ticker.FuncFormatter(lambda mins, pos: f'{int(15*mins//60)}:{int(15*mins%60)}')
         axs1.yaxis.set_major_formatter(yformatter)
 
-        #xformatter = matplotlib.ticker.FuncFormatter(lambda date, pos: str(date)+':'+str(pos))
-        #axs1.xaxis.set_major_formatter(xformatter)
+        date_format = DateFormatter('%d/%m')
+        yformatter = matplotlib.ticker.FuncFormatter(date_format)
+        axs1.xaxis.set_major_formatter(yformatter)
+
+        #plt.xticks(rotation=-90)
         axs1.grid(True)
     plt.show()
 
