@@ -267,13 +267,19 @@ def _save_(): #Saves all the color values in the list activity_data
             fh.csv_append(flatlist)		
     unsaved_changes=False   
 
-#code)
+#code
 
 save = Button(grid_frame, text='Save', width=7, command=_save_)
 save.grid(row=5, column=22, columnspan=3)
 color_info = Label(grid_frame, font=tkfont.Font(size=7),text="🛈 Green: Studied, Red: Wasted, Blue: Class, Yellow: Daily Activities, Orange: Sleep")
 color_info.grid(row=6, column=7, columnspan=18, sticky='ES')
 
+def save_popup():
+    global unsaved_changes
+    if unsaved_changes==True:
+            save_qn = messagebox.askyesno('Confirm Save', "Save changes?")
+            if save_qn==True:
+                _save_()
 
 '''
 Date-Picker
@@ -382,6 +388,9 @@ _sleep_count.grid(row=n+5, column=1)
 _unfill_count.grid(row=n+6, column=1)
 
 def refresh_analytics():
+    global unsaved_changes
+    save_popup()
+
     global start_date
     global end_date
     range_in_focus = fh.get_range(start_date, end_date)
@@ -482,10 +491,13 @@ to_cal.grid(row=2, column=1)
 to_cal.set_date(end_date)
 to_cal.bind('<<DateEntrySelected>>', to_cal_changed)
 
-
-#GRAPHS
-
+'''
+GRAPHS
+'''
 def generate_graphs():
+
+    save_popup()
+
     data = refresh_analytics()
     counts = data['counts']
     total = data['total']
@@ -552,14 +564,17 @@ PDF-print
 def pdf_print():
     global start_date
     global end_date
+    global unsaved_changes
+
+    save_popup()
 
     path = filedialog.asksaveasfilename(defaultextension='.pdf', filetypes=[("PDF file", '*.pdf')], title="Choose filename")
     range_rows = fh.get_range(start_date, end_date)
     range_rows.sort()
 
     if path:
-        os.mkdir("pdf-pics-temp")
-        im_manip.make_images(range_rows)
+        #os.mkdir("pdf-pics-temp")
+        #im_manip.make_images(range_rows)
         im_manip.make_pdf(path, range_rows)
         shutil.rmtree(im_manip.rel_path('pdf-pics-temp'))
    
