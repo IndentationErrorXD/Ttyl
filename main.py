@@ -511,18 +511,20 @@ def generate_graphs():
         labels.pop()
 
     #[study_count, waste_count, class_count, da_count, sleep_count, unfill_count]
-    if total>96:
+    
+    if total>5*96:
         fig, (axs0, axs1) = plt.subplots(1, 2, figsize =(13, 6)) 
         plt.tight_layout()
         plt.gcf().subplots_adjust(bottom=0.15)
     else:
-        fig, axs0 = plt.subplots(figsize =(10, 5))    
+        fig, axs0 = plt.subplots(figsize =(10, 5))
+
     axs0.pie(counts, 
         labels = labels,
         colors=colors,
         autopct=lambda p: f'{round(p,2)}%') 
     #axs0.legend(loc ="lower right") 
-    if total>96:
+    if total>5*96:
         dates = [counts[0] for counts in daywise_counts]
         Studies = [counts[1] for counts in daywise_counts]
         Relaxed = [counts[2] for counts in daywise_counts]
