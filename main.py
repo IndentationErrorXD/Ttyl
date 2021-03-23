@@ -506,13 +506,19 @@ def generate_graphs():
     colors = ['green', 'red', 'blue', 'yellow', 'orange', 'grey']
     c_and_l = zip(labels, colors)
 
-    if counts[-1]==0:
-        counts.pop()
-        labels.pop()
+    for i, count in enumerate(counts):  
+        if count==0:
+            counts.pop(i)
+            labels.pop(i)
+            colors.pop(i)
+
+    for day in daywise_counts:
+        if day[-1]==96:
+            daywise_counts.remove(day)
 
     #[study_count, waste_count, class_count, da_count, sleep_count, unfill_count]
     
-    if total>5*96:
+    if len(daywise_counts)>5:
         fig, (axs0, axs1) = plt.subplots(1, 2, figsize =(13, 6)) 
         plt.tight_layout()
         plt.gcf().subplots_adjust(bottom=0.15)
@@ -524,7 +530,7 @@ def generate_graphs():
         colors=colors,
         autopct=lambda p: f'{round(p,2)}%') 
     #axs0.legend(loc ="lower right") 
-    if total>5*96:
+    if len(daywise_counts)>5:
         dates = [counts[0] for counts in daywise_counts]
         Studies = [counts[1] for counts in daywise_counts]
         Relaxed = [counts[2] for counts in daywise_counts]
