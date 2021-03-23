@@ -474,7 +474,7 @@ def to_cal_changed(e):
     	messagebox.showwarning('Time travel Not possible', "Cannot select future date")
     elif _date<start_date:
         to_cal.set_date(end_date)
-        messagebox.showwarning("User Error", "From date cannot preceed from-date.\nPlease set from-date first")
+        messagebox.showwarning("User Error", "To date cannot preceed from-date.\nPlease set from-date first")
     else:
         end_date=_date
         refresh_analytics()
@@ -593,6 +593,7 @@ def pdf_print():
         im_manip.make_images(range_rows)
         im_manip.make_pdf(path, range_rows)
         shutil.rmtree(im_manip.rel_path('pdf-pics-temp'))
+        messagebox.showinfo("Save complete", "PDF saved successfully")
    
 pdf_button = Button(root, text='Download PDF', command=pdf_print)
 pdf_button.grid(row=7, column=24, sticky='n')
