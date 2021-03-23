@@ -504,7 +504,6 @@ def generate_graphs():
     daywise_counts = data['daywise_counts']
     labels = ['Studies', 'Relaxed', 'Class', 'Daily Activities', 'Sleep', 'Unfilled']
     colors = ['green', 'red', 'blue', 'yellow', 'orange', 'grey']
-    c_and_l = zip(labels, colors)
 
     for i in range(len(counts)-1, -1, -1):
         if counts[i]==0:
@@ -560,7 +559,7 @@ def generate_graphs():
         plt.xlabel("Days")
         plt.ylabel("Hours")
 
-        yformatter = matplotlib.ticker.FuncFormatter(lambda mins, pos: f'{int(15*mins//60)}:{int(15*mins%60)}') #if int(15*mins%60)!=0 else f'{int(15*mins//60)}:00' )
+        yformatter = matplotlib.ticker.FuncFormatter(lambda mins, pos: f'{int(15*mins//60)}:{int(15*mins%60)}' if int(15*mins%60)>10 else f'{int(15*mins//60)}:0{int(15*mins%60)}')
         axs1.yaxis.set_major_formatter(yformatter)
 
         date_format = DateFormatter('%d/%m')
@@ -590,8 +589,8 @@ def pdf_print():
     range_rows.sort()
 
     if path:
-        #os.mkdir("pdf-pics-temp")
-        #im_manip.make_images(range_rows)
+        os.mkdir("pdf-pics-temp")
+        im_manip.make_images(range_rows)
         im_manip.make_pdf(path, range_rows)
         shutil.rmtree(im_manip.rel_path('pdf-pics-temp'))
    
