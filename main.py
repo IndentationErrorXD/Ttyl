@@ -506,11 +506,15 @@ def generate_graphs():
     colors = ['green', 'red', 'blue', 'yellow', 'orange', 'grey']
     c_and_l = zip(labels, colors)
 
-    for i, count in enumerate(counts):  
-        if count==0:
+    for i in range(len(counts)-1, -1, -1):
+        if counts[i]==0:
             counts.pop(i)
             labels.pop(i)
             colors.pop(i)
+    
+    if counts==[]:
+        messagebox.showwarning("Range contains no values", "Selected Date range has no saved data")
+        return
 
     for day in daywise_counts:
         if day[-1]==96:
@@ -529,6 +533,8 @@ def generate_graphs():
         labels = labels,
         colors=colors,
         autopct=lambda p: f'{round(p,2)}%') 
+    axs0.title.set_text("Total time distribution")
+
     #axs0.legend(loc ="lower right") 
     if len(daywise_counts)>5:
         dates = [counts[0] for counts in daywise_counts]
@@ -544,6 +550,8 @@ def generate_graphs():
         axs1.plot(dates, Studies, color='green', marker='o', label='Studies')
         axs1.plot(dates, Relaxed, color='red', marker='o', label='Relaxed')
         axs1.legend()
+
+        axs1.title.set_text('Daily time analysis')
 
         #plt.minorticks_on() #to enable minor tickmarcks
         #for i,j in zip(dates, Relaxed):
@@ -561,6 +569,7 @@ def generate_graphs():
 
         #plt.xticks(rotation=-90)
         axs1.grid(True)   #add which='both'to enable minor gridlines
+
     plt.show() 
 
 gen_graph_button = Button(analytics_frame, text="Show Graphs", command=generate_graphs)
