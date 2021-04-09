@@ -267,13 +267,19 @@ def _save_(): #Saves all the color values in the list activity_data
             fh.csv_append(flatlist)		
     unsaved_changes=False   
 
-#code)
+#code
 
 save = Button(grid_frame, text='Save', width=7, command=_save_)
 save.grid(row=5, column=22, columnspan=3)
 color_info = Label(grid_frame, font=tkfont.Font(size=7),text="🛈 Green: Studied, Red: Wasted, Blue: Class, Yellow: Daily Activities, Orange: Sleep")
 color_info.grid(row=6, column=7, columnspan=18, sticky='ES')
 
+def save_popup():
+    global unsaved_changes
+    if unsaved_changes==True:
+            save_qn = messagebox.askyesno('Confirm Save', "Save changes?")
+            if save_qn==True:
+                _save_()
 
 '''
 Date-Picker
@@ -382,6 +388,9 @@ _sleep_count.grid(row=n+5, column=1)
 _unfill_count.grid(row=n+6, column=1)
 
 def refresh_analytics():
+    global unsaved_changes
+    save_popup()
+
     global start_date
     global end_date
     range_in_focus = fh.get_range(start_date, end_date)
@@ -465,7 +474,7 @@ def to_cal_changed(e):
     	messagebox.showwarning('Time travel Not possible', "Cannot select future date")
     elif _date<start_date:
         to_cal.set_date(end_date)
-        messagebox.showwarning("User Error", "From date cannot preceed from-date.\nPlease set from-date first")
+        messagebox.showwarning("User Error", "To date cannot preceed from-date.\nPlease set from-date first")
     else:
         end_date=_date
         refresh_analytics()
@@ -482,35 +491,51 @@ to_cal.grid(row=2, column=1)
 to_cal.set_date(end_date)
 to_cal.bind('<<DateEntrySelected>>', to_cal_changed)
 
-
-#GRAPHS
-
+'''
+GRAPHS
+'''
 def generate_graphs():
+
+    save_popup()
+
     data = refresh_analytics()
     counts = data['counts']
     total = data['total']
     daywise_counts = data['daywise_counts']
     labels = ['Studies', 'Relaxed', 'Class', 'Daily Activities', 'Sleep', 'Unfilled']
     colors = ['green', 'red', 'blue', 'yellow', 'orange', 'grey']
-    c_and_l = zip(labels, colors)
 
-    if counts[-1]==0:
-        counts.pop()
-        labels.pop()
+    for i in range(len(counts)-1, -1, -1):
+        if counts[i]==0:
+            counts.pop(i)
+            labels.pop(i)
+            colors.pop(i)
+    
+    if counts==[]:
+        messagebox.showwarning("Range contains no values", "Selected Date range has no saved data")
+        return
+
+    for day in daywise_counts:
+        if day[-1]==96:
+            daywise_counts.remove(day)
 
     #[study_count, waste_count, class_count, da_count, sleep_count, unfill_count]
-    if total>96:
+    
+    if len(daywise_counts)>5:
         fig, (axs0, axs1) = plt.subplots(1, 2, figsize =(13, 6)) 
         plt.tight_layout()
         plt.gcf().subplots_adjust(bottom=0.15)
     else:
-        fig, axs0 = plt.subplots(figsize =(10, 5))    
+        fig, axs0 = plt.subplots(figsize =(10, 5))
+
     axs0.pie(counts, 
         labels = labels,
         colors=colors,
         autopct=lambda p: f'{round(p,2)}%') 
+    axs0.title.set_text("Total time distribution")
+
     #axs0.legend(loc ="lower right") 
-    if total>96:
+    if len(daywise_counts)>5:
         dates = [counts[0] for counts in daywise_counts]
         Studies = [counts[1] for counts in daywise_counts]
         Relaxed = [counts[2] for counts in daywise_counts]
@@ -525,6 +550,8 @@ def generate_graphs():
         axs1.plot(dates, Relaxed, color='red', marker='o', label='Relaxed')
         axs1.legend()
 
+        axs1.title.set_text('Daily time analysis')
+
         #plt.minorticks_on() #to enable minor tickmarcks
         #for i,j in zip(dates, Relaxed):
         #   axs1.annotate(f'{int(15*j//60)}:{int(15*j%60)}',xy=(i,j+0.5))
@@ -532,7 +559,7 @@ def generate_graphs():
         plt.xlabel("Days")
         plt.ylabel("Hours")
 
-        yformatter = matplotlib.ticker.FuncFormatter(lambda mins, pos: f'{int(15*mins//60)}:{int(15*mins%60)}') #if int(15*mins%60)!=0 else f'{int(15*mins//60)}:00' )
+        yformatter = matplotlib.ticker.FuncFormatter(lambda mins, pos: f'{int(15*mins//60)}:{int(15*mins%60)}' if int(15*mins%60)>10 else f'{int(15*mins//60)}:0{int(15*mins%60)}')
         axs1.yaxis.set_major_formatter(yformatter)
 
         date_format = DateFormatter('%d/%m')
@@ -541,6 +568,7 @@ def generate_graphs():
 
         #plt.xticks(rotation=-90)
         axs1.grid(True)   #add which='both'to enable minor gridlines
+
     plt.show() 
 
 gen_graph_button = Button(analytics_frame, text="Show Graphs", command=generate_graphs)
@@ -552,6 +580,9 @@ PDF-print
 def pdf_print():
     global start_date
     global end_date
+    global unsaved_changes
+
+    save_popup()
 
     path = filedialog.asksaveasfilename(defaultextension='.pdf', filetypes=[("PDF file", '*.pdf')], title="Choose filename")
     range_rows = fh.get_range(start_date, end_date)
@@ -562,6 +593,7 @@ def pdf_print():
         im_manip.make_images(range_rows)
         im_manip.make_pdf(path, range_rows)
         shutil.rmtree(im_manip.rel_path('pdf-pics-temp'))
+        messagebox.showinfo("Save complete", "PDF saved successfully")
    
 pdf_button = Button(root, text='Download PDF', command=pdf_print)
 pdf_button.grid(row=7, column=24, sticky='n')
