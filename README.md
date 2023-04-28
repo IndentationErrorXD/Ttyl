@@ -10,3 +10,6 @@ Purpose and Uses:
 •Based on antecedent inputs from the users, the program suggests the next day’s activities.  
 •Linking the multiple user databases, program suggests intervals when the users as a group would be free. This aids in effective scheduling of group activities like get togethers, parties, meetings, classes etc
 
+# Milestones (for Ingenius Framework Track)
+- Implement Multiplayer functionality so that multiple clients can update time data in real time and it is reflected.
+- Implement support for multiple users
