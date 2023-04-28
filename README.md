@@ -10,6 +10,19 @@ Purpose and Uses:
 •Based on antecedent inputs from the users, the program suggests the next day’s activities.  
 •Linking the multiple user databases, program suggests intervals when the users as a group would be free. This aids in effective scheduling of group activities like get togethers, parties, meetings, classes etc
 
+# M1 Mac
+You need to install the following packages on M1
+```bash
+brew install python-tk pikepdf
+```
+
+# Contributing instructions
+- Fork the project and you can develop your changes on any branch
+- Make a PR to Merge to branch 'ingenius-contrib' not 'master'
+
 # Milestones (for Ingenius Framework Track)
 - Implement Multiplayer functionality so that multiple clients can update time data in real time and it is reflected.
 - Implement support for multiple users
+
+# Maintainer's Contact
+Please contact 8618950413 incase you want any clarifications
