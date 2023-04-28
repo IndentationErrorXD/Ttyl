@@ -13,3 +13,6 @@ Purpose and Uses:
 # Milestones (for Ingenius Framework Track)
 - Implement Multiplayer functionality so that multiple clients can update time data in real time and it is reflected.
 - Implement support for multiple users
+
+# Maintainer's Contact
+Please contact 8618950413 incase you want any clarifications
