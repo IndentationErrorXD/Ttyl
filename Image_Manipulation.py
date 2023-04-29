@@ -79,8 +79,8 @@ def make_pdf(path, range_in_focus):
 
 		y_offset = 0
 		for im in batch:
-		  new_im.paste(im, (0, y_offset))
-		  y_offset += im.size[1]
+			new_im.paste(im, (0, y_offset))
+			y_offset += im.size[1]
 
 		im_pages.append(new_im)
 
