@@ -22,8 +22,9 @@ unsaved_changes=False
 #activity_data = [] #stores the color values of all timeslots/Button UPON SAVING
 
 #print(date.fromisoformat(str(date.today())).weekday())
+
 if os.path.exists('data.csv') == False:
-	fh.initialize()
+    fh.initialize()
 
 root = Tk()
 root.title("Time Matrix")
@@ -72,7 +73,7 @@ def loadgrid(date, data=[]):
                             p=True
                             for l in range(1,len(x),4):
                                     L.append(x[l:l+4])                            
-                          
+                        
         for hr in range(0, 23+1):  #iterating throught the 24hrs of the day
                 button_list.append([])
                 for mins in range(0, 3+1):#iterating thru 4 15min slots of 1 hr
@@ -90,9 +91,9 @@ def insertgrid(button_list):
     no_of_hrs = len(button_list)
 
     for hr in range(no_of_hrs):
-    	no_of_minslots = len(button_list[hr])
-    	for mins in range(no_of_minslots):
-    		button_list[hr][mins].grid(row=mins+1, column=hr+1)
+        no_of_minslots = len(button_list[hr])
+        for mins in range(no_of_minslots):
+            button_list[hr][mins].grid(row=mins+1, column=hr+1)
 
 insertgrid(button_list)
 
@@ -120,7 +121,7 @@ def refresh_grid():
                     bg = button.cget('bg')
                     activity_data[hr].append(bg)
     #print(activity_data)   
-                     
+                    
     deletegrid()
     button_list=[]
     loadgrid(date, activity_data)
@@ -131,36 +132,36 @@ def refresh_grid():
 #HR-labels
 
 for i in range(12):
-	l = [12]+list(range(1,12))
-	e=l[i]
-	hour = f"0{e}:00  AM" if e<10 else f"{e}:00  AM"
+    l = [12]+list(range(1,12))
+    e=l[i]
+    hour = f"0{e}:00  AM" if e<10 else f"{e}:00  AM"
 
-	sub_frame = LabelFrame(grid_frame)
-	sub_frame.grid(row = 0, column = i+1)
+    sub_frame = LabelFrame(grid_frame)
+    sub_frame.grid(row = 0, column = i+1)
 
-	canvas_1_manage = Canvas(sub_frame, width = 10, height = 60)
-	canvas_1_manage.pack()
-	canvas_1_manage.create_text(6, 60, text = hour, angle = 90, anchor = "w")
+    canvas_1_manage = Canvas(sub_frame, width = 10, height = 60)
+    canvas_1_manage.pack()
+    canvas_1_manage.create_text(6, 60, text = hour, angle = 90, anchor = "w")
 
 for i in range(12):
-	l = [12]+list(range(1,12))
-	e=l[i]
-	hour = f"0{e}:00  PM" if e<10 else f"{e}:00  PM"
+    l = [12]+list(range(1,12))
+    e=l[i]
+    hour = f"0{e}:00  PM" if e<10 else f"{e}:00  PM"
 
-	sub_frame = LabelFrame(grid_frame)
-	sub_frame.grid(row = 0, column = 12+i+1)
+    sub_frame = LabelFrame(grid_frame)
+    sub_frame.grid(row = 0, column = 12+i+1)
 
-	canvas_1_manage = Canvas(sub_frame, width = 10, height = 60)
-	canvas_1_manage.pack()
-	canvas_1_manage.create_text(6, 60, text = hour, angle = 90, anchor = "w")
+    canvas_1_manage = Canvas(sub_frame, width = 10, height = 60)
+    canvas_1_manage.pack()
+    canvas_1_manage.create_text(6, 60, text = hour, angle = 90, anchor = "w")
 
 #MIN-labels
 for i in range(4):
-	mins_frame = LabelFrame(grid_frame, height=20, width=40)
-	mins_frame.grid(row=i+1, column=0)
-	mins_frame.pack_propagate(0) # Stops child widgets of label_frame from resizing it
-	min_label = Label(mins_frame, text ="{}-{}".format(i*15, (i+1)*15))
-	min_label.pack()
+    mins_frame = LabelFrame(grid_frame, height=20, width=40)
+    mins_frame.grid(row=i+1, column=0)
+    mins_frame.pack_propagate(0) # Stops child widgets of label_frame from resizing it
+    min_label = Label(mins_frame, text ="{}-{}".format(i*15, (i+1)*15))
+    min_label.pack()
 
 #Fill-Mode:
 
@@ -292,8 +293,9 @@ def when_date_changed(e):
     _date=cal.get_date()
 
     if _date>date.today():
-    	cal.set_date(date)
-    	messagebox.showwarning('Time travel Not possible', "Cannot select future date")
+        cal.set_date(date)
+        messagebox.showwarning('Time travel Not possible', "Cannot select future date")
+        
     else:
         
         if unsaved_changes==True:
@@ -302,7 +304,7 @@ def when_date_changed(e):
                 _save_()
             elif save_qn==False:
                 unsaved_changes=False
-             
+            
         date = _date
         #print(date)
 
@@ -455,8 +457,8 @@ def from_cal_changed(e):
     _date=from_cal.get_date()
 
     if _date>date.today():
-    	from_cal.set_date(start_date)
-    	messagebox.showwarning('Time travel Not possible', "Cannot select future date")
+        from_cal.set_date(start_date)
+        messagebox.showwarning('Time travel Not possible', "Cannot select future date")
     elif _date>end_date:
         from_cal.set_date(start_date)
         messagebox.showwarning("User Error", "From date cannot exceed To-date.\nPlease set to-date first")
@@ -470,8 +472,8 @@ def to_cal_changed(e):
     _date=to_cal.get_date()
 
     if _date>date.today():
-    	to_cal.set_date(end_date)
-    	messagebox.showwarning('Time travel Not possible', "Cannot select future date")
+        to_cal.set_date(end_date)
+        messagebox.showwarning('Time travel Not possible', "Cannot select future date")
     elif _date<start_date:
         to_cal.set_date(end_date)
         messagebox.showwarning("User Error", "To date cannot preceed from-date.\nPlease set from-date first")
@@ -594,7 +596,7 @@ def pdf_print():
         im_manip.make_pdf(path, range_rows)
         shutil.rmtree(im_manip.rel_path('pdf-pics-temp'))
         messagebox.showinfo("Save complete", "PDF saved successfully")
-   
+
 pdf_button = Button(root, text='Download PDF', command=pdf_print)
 pdf_button.grid(row=7, column=24, sticky='n')
 
