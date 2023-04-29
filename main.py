@@ -19,6 +19,9 @@ colors = ['white', 'red', 'orange', 'blue', 'green', 'yellow','white']
 date = date.today()
 unsaved_changes=False
 
+
+
+
 #activity_data = [] #stores the color values of all timeslots/Button UPON SAVING
 
 #print(date.fromisoformat(str(date.today())).weekday())
@@ -28,6 +31,8 @@ if os.path.exists('data.csv') == False:
 root = Tk()
 root.title("Time Matrix")
 root.geometry('+250+0')
+
+menubar = Menu(root)
 
 blank_image = PhotoImage()
 
@@ -78,7 +83,7 @@ def loadgrid(date, data=[]):
                 for mins in range(0, 3+1):#iterating thru 4 15min slots of 1 hr
                     if fill_mode:
                         #print('fill mode called')
-                        button_list[hr].append(Button(grid_frame, image=blank_image, height=h, width=w, bg=L[hr][mins] if p else 'white', borderwidth=4, command=lambda h=hr, m=mins, color=fill_color: button_click_fill_mode(h, m, color)))
+                        button_list[hr].append(Button(grid_frame, image=blank_image, height=h, width=w, bg=L[hr][mins] if p else 'white', borderwidth=5, command=lambda h=hr, m=mins, color=fill_color: button_click_fill_mode(h, m, color)))
                     else:
                         #print('def mode called')    
                         button_list[hr].append(Button(grid_frame, image=blank_image, height=h, width=w, bg=L[hr][mins] if p else 'white', borderwidth=4, command=lambda h=hr, m=mins: button_click_default(h, m)))
@@ -138,7 +143,7 @@ for i in range(12):
 	sub_frame = LabelFrame(grid_frame)
 	sub_frame.grid(row = 0, column = i+1)
 
-	canvas_1_manage = Canvas(sub_frame, width = 10, height = 60)
+	canvas_1_manage = Canvas(sub_frame, width = 20, height = 65, bd=-3)
 	canvas_1_manage.pack()
 	canvas_1_manage.create_text(6, 60, text = hour, angle = 90, anchor = "w")
 
@@ -150,7 +155,7 @@ for i in range(12):
 	sub_frame = LabelFrame(grid_frame)
 	sub_frame.grid(row = 0, column = 12+i+1)
 
-	canvas_1_manage = Canvas(sub_frame, width = 10, height = 60)
+	canvas_1_manage = Canvas(sub_frame, width = 20, height = 65, bd=-3)
 	canvas_1_manage.pack()
 	canvas_1_manage.create_text(6, 60, text = hour, angle = 90, anchor = "w")
 
@@ -165,7 +170,7 @@ for i in range(4):
 #Fill-Mode:
 
 #label
-fillmode_frame = LabelFrame(grid_frame, width=60, height=27)
+fillmode_frame = LabelFrame(grid_frame, width=70, height=27)
 fillmode_frame.grid(row=5, column=1, columnspan=3)
 fillmode_frame.pack_propagate(0)
 _fillmode = Label(fillmode_frame, text='Fill Mode:')
@@ -204,7 +209,7 @@ FM_toggle_button.grid(row=5, column=4, columnspan=3, sticky=N+S+E+W)
 #Fill-Color
 
 #label
-fillcolor_frame = LabelFrame(grid_frame, width=60, height=27)
+fillcolor_frame = LabelFrame(grid_frame, width=70, height=27)
 fillcolor_frame.grid(row=6, column=1, columnspan=3)
 fillcolor_frame.pack_propagate(0)
 _fillcolor = Label(fillcolor_frame, text='Fill Color:')
@@ -271,7 +276,7 @@ def _save_(): #Saves all the color values in the list activity_data
 
 save = Button(grid_frame, text='Save', width=7, command=_save_)
 save.grid(row=5, column=22, columnspan=3)
-color_info = Label(grid_frame, font=tkfont.Font(size=7),text="🛈 Green: Studied, Red: Wasted, Blue: Class, Yellow: Daily Activities, Orange: Sleep")
+color_info = Label(grid_frame, font=tkfont.Font(size=10),text="🛈 Green: Studied, Red: Wasted, Blue: Class, Yellow: Daily Activities, Orange: Sleep")
 color_info.grid(row=6, column=7, columnspan=18, sticky='ES')
 
 def save_popup():
@@ -336,6 +341,8 @@ def l_arrow():
 
 l_arrow = Button(picker_frame, text='🢀', command=l_arrow)
 l_arrow.grid(row=0, column=0)
+
+
 
 '''
 Analytics
